@@ -53,13 +53,44 @@ app.get("/get/witai/entities",function(req,res){
     }
 
   }
-  client.get("https://api.wit.ai/entities",wit,function(response){
+  client.get("https://api.wit.ai/entities/intent",wit,function(response){
     res.send(response);
   });
 
 })
 
- app.get('/hello',cors(), function (req, res) {
+app.post("/post/intent/expressions",function(req,res){
+  var wit = {
+    data : {
+		value : req.body.value,
+		expressions : req.body.expressions
+    },
+    headers : {
+      "Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
+      "Content-Type": "application/json"
+    }
+  }
+  client.post("https://api.wit.ai/entities/intent/values",wit,function(response){
+    res.send(response);
+  });
+
+});
+
+app.delete("/delete/intent/expressions",function(req,res){
+	var wit = {
+		data : {
+		},
+		headers : {
+		  "Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
+		  "Content-Type": "application/json"
+		}
+	}
+	client.delete("https://api.wit.ai/entities/intent/values/"+req.body.value+"/expressions/"+req.body.expression,wit,function(response){
+		res.send(response);
+	});
+});
+
+app.get('/hello',cors(), function (req, res) {
 	var ref = firebase.database().ref("/");
 
 ref.once("value", function(snapshot) {

@@ -31,38 +31,45 @@ Vue.component('entity',{
 	template : '<div class="col-sm-6 col-md-4">'
 					+'<div class="thumbnail">'
 					  +'<div class="caption">'
-						+'<h3>{{index}} - {{name}} </h3>'
+						+'<h3>{{value}} </h3>'
 						+'<p><input type="text" v-model="sentence"></p>'
-						+'<p><label>{{$t("message.storedSentence")}} : </label><span>{{storedSentence}}</span></p>'
-						+'<p><a  class="btn btn-primary" role="button" v-on:click="removeSentece(id)">{{$t("message.remove")}}</a>'
-						+'<a class="btn btn-default" role="button" v-on:click="addSentence(id)">{{$t("message.add")}}</a></p>'
+						+'<p><label>{{$t("message.storedSentence")}} : </label><span><select v-model="expression"><option v-for="exp in expressions" >{{ exp }}</option></select></span></p>'
+						+'<p><a  class="btn btn-primary" role="button" v-on:click="removeSentece(value)">{{$t("message.remove")}}</a>'
+						+'<a class="btn btn-default" role="button" v-on:click="addSentence(value)">{{$t("message.add")}}</a></p>'
 					  +'</div>'
 					+'</div>'
 				  +'</div>',
-	props: ['name','index','id'],
+	props: ['value','index','expressions'],
 
 	methods : {
 		addSentence : function(id){
 			console.log(id);
 			if(this.sentence.trim() != ""){
-					this.storedSentence = this.sentence;
+					this.expressions.push(this.sentence)
+					Vue.http.post("/post/intent/expressions",{value : this.value ,expressions:this.expressions}).then(function(resp){
+						
+					})
 			}
 		},
 		removeSentece : function(id){
-			if(this.sentence.trim() != ""){
-					this.storedSentence = "";
+			if(this.expression.trim() != ""){
+				var index = this.expressions.indexOf(this.expression);
+				this.expressions.splice(index,1);
+				Vue.http.delete("/delete/intent/expressions",{value : this.value , expression : this.expression}).then(function(resp){
+
+				});
 			}
 		}
 	},
 	data :	function () {
-		return {sentence : "",storedSentence : ""}
+		return {sentence : "",expression : ""}
 
 	}
 
 });
 
 Vue.component('row',{
-	template : '<div class="row"> <entity v-for="(entity,index) in array" v-bind:name="entity.name" v-bind:id="entity.id"  v-bind:index="index" :key="entity.id"></entity></div>',
+	template : '<div class="row"> <entity v-for="(entity,index) in array" v-bind:value="entity.value" v-bind:expressions="entity.expressions"  v-bind:index="index" :key="entity.value"></entity></div>',
 	props: ['array']
 
 });
@@ -81,7 +88,9 @@ var container = Vue.component('container',{
 							+'</span>'
 						+'</div>'
 				+'</div>'
-				+'<div class="content"><div style="width:20%;display:inline-block"><ul v-for="intent in this.original"><li v-for="i in intent"><span v-on:click="showOnlyThisItem(i)">{{i.id}} - {{i.name}}</span></li></ul></div><div style="width:80%;display:inline-block;vertical-align: top;" ><div ><label>{{$t("message.search")}}</label> <input type="text" v-model="searchText" v-on:keyup="search"/></div><br/><br/><row v-for="entityArray in this.intentList"  v-bind:array="entityArray" ></row></div></div>'
+				+'<div class="content"><div style="width:20%;display:inline-block">'
+				+'<ul v-for="intent in this.original"><li v-for="i in intent"><span v-on:click="showOnlyThisItem(i)">{{i.value}}</span></li></ul></div><div style="width:80%;display:inline-block;vertical-align: top;" ><div ><label>{{$t("message.search")}}</label> <input type="text" v-model="searchText" v-on:keyup="search"/></div><br/><br/>'
+				+'<row v-for="entityArray in this.intentList"  v-bind:array="entityArray" ></row></div></div>'
 				+'<div class="footer"></div></div>',
 	methods : {
 		showOnlyThisItem : function(entity){
@@ -95,13 +104,13 @@ var container = Vue.component('container',{
 			this.immutableObjectToEntity();
 			for(var i = 0 ; i < this.original.length ;i++){
 				for(var j = 0 ; j < this.original[i].length;j++){
-					if(this.original[i][j].name.toLocaleUpperCase().indexOf(this.searchText.toLocaleUpperCase()) < 0){
+					if(this.original[i][j].value.toLocaleUpperCase().indexOf(this.searchText.toLocaleUpperCase()) < 0){
 						var k = 0 ;
 						for(k=0 ; k < this.intentList.length;k++){
 							var z = 0 ;
 							var flag = false;
 							for(z = 0 ; z < this.intentList[k].length; z++){
-								if(this.intentList[k][z].id == this.original[i][j].id){
+								if(this.intentList[k][z].value == this.original[i][j].value){
 									flag= true;
 									break;
 								}
@@ -147,22 +156,17 @@ var container = Vue.component('container',{
 			Vue.http.get("/get/witai/entities").then(function(resp){
 				  var counter = 0;
 					var index = -1;
-					for(var i= 0; i < resp.data.length;i++){
+					for(var i= 0; i < resp.data.values.length;i++){
 						if(counter % 3 == 0){
 							index++;
 							iList[index] = [];
 						}
-						iList[index].push(resp.data[i]);
+						iList[index].push(resp.data.values[i]);
 						counter++;
 					}
-
-
-					 func();
+					func();
 			});
-
 		}
-
-
 	},
 	mounted : function(){
 		this.$nextTick(function () {
