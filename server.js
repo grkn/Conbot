@@ -60,6 +60,7 @@ app.get("/get/witai/entities",function(req,res){
 })
 
 app.post("/post/intent/expressions",function(req,res){
+  console.log(req.body.expressions);
   var wit = {
     data : {
 		value : req.body.value,
@@ -77,6 +78,7 @@ app.post("/post/intent/expressions",function(req,res){
 });
 
 app.delete("/delete/intent/expressions",function(req,res){
+  console.log(req.body.expression);
 	var wit = {
 		data : {
 		},
@@ -85,7 +87,8 @@ app.delete("/delete/intent/expressions",function(req,res){
 		  "Content-Type": "application/json"
 		}
 	}
-	client.delete("https://api.wit.ai/entities/intent/values/"+req.body.value+"/expressions/"+req.body.expression,wit,function(response){
+	client.delete("https://api.wit.ai/entities/intent/values/"+req.body.value+"/expressions/"+encodeURIComponent(req.body.expression),wit,function(response){
+    console.log(response);
 		res.send(response);
 	});
 });
