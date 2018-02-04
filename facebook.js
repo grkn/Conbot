@@ -33,6 +33,7 @@ var facebookclass= class FacebookBotClass {
 
 		this.bot.on('message', (payload, reply) => {
 
+
 			/*var dialog = {
 				data : {
 							    "contexts": [
@@ -59,7 +60,7 @@ var facebookclass= class FacebookBotClass {
 				});
 			});*/
 
-			var wit = {
+			/*var wit = {
 				data : {
 					parameters: {}
 				},
@@ -72,7 +73,7 @@ var facebookclass= class FacebookBotClass {
 			client.get("https://api.wit.ai/message?q="+encodeURIComponent(payload.message.text),wit,function(response){
 				console.log(response.entities.intent[0]);
 			});
-
+*/
 
 /*
 		let loc = {title : 'Please send your location'};
@@ -140,7 +141,7 @@ var facebookclass= class FacebookBotClass {
 			});
 */
 
-/*
+
 			let listtemp = { elements : [
 												{
 															"title": "Classic T-Shirt Collection",
@@ -173,6 +174,18 @@ var facebookclass= class FacebookBotClass {
 																	"payload":"DEVELOPER_DEFINED_PAYLOAD"
 																}
 															]
+														},
+														{
+															"title": "Classic Blue T-Shirt",
+															"subtitle": "100% Cotton, 200% Comfortable",
+															"image_url": "https://1ed06b63.eu.ngrok.io/company_image.png",
+															"buttons":[
+																{
+																	"type":"postback",
+																	"title":"Start Chatting",
+																	"payload":"DEVELOPER_DEFINED_PAYLOAD"
+																}
+															]
 														}
 											 ],
 											 buttons : [
@@ -186,7 +199,7 @@ var facebookclass= class FacebookBotClass {
 			this.bot.sendMessage(payload.sender.id, this.listtemplate(listtemp), function(resp){
 				console.log(resp);
 			});
-*/
+
 
 
 /*
@@ -309,6 +322,8 @@ var facebookclass= class FacebookBotClass {
 	    }
 	  }
 */
+
+
 
 		})
 		http.createServer(this.bot.middleware()).listen(8080)
