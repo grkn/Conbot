@@ -113,14 +113,15 @@ ref.once("value", function(snapshot) {
 app.post('/send/meaningful/sentence',cors(), function (req, res) {
 	var ref = firebase.database().ref("/answer");
   var set = { 'key' : req.body.intent, 'value' : req.body.message};
-  ref.child("/").equalTo(set).once("value", function(snapshot) {
-    var exists = snapshot.val();
-    console.log(exists);
-    if(!exists){
-      ref.push().set(set);
+  ref.once('value', function(snapshot) {
+    var array = snapshot.val();
+    for(var key in array){
+      if(array[key].key == req.body.intent){
+          ref.child(key).remove();
+      }
     }
+    ref.push().set(set);
   });
-
   res.send({ resp : "OK"});
 });
 
@@ -143,7 +144,7 @@ app.delete('/delete/meaningful/sentence',cors(), function (req, res) {
   ref.once("value", function(snapshot) {
       snapshot.forEach(function(childSnapshot) {
         ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
-          if(itemSnapshot.val().key == req.query.intent){
+          if(itemSnapshot.val().key == req.body.intent){
             itemSnapshot.delete();
           }
         });

@@ -218,7 +218,7 @@ Vue.component('entity_answers',{
 		this.$nextTick(function () {
 			var sentence = this.sentence
 			Vue.http.get("/get/meaningful/sentence",{intent : this.value}).then(function(resp){
-					 sentence.default = resp.data;
+					 sentence.default = resp.data.resp;
 			})
 	  })
 	},
