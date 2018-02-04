@@ -4,11 +4,13 @@ var firebase = require('firebase');
 var bodyParser = require('body-parser');
 var MessengerPlatform = require('facebook-bot-messenger');
 var FaceBookClass = require('./facebook');
+var app = require('express')();
+
 var Client = require('node-rest-client').Client;
 
 var client = new Client();
 
-var app = require('express')();
+
 
 
 
@@ -18,16 +20,12 @@ firebase.initializeApp({
 });
 
 app.use(bodyParser.json());
-
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function (req, res, next) {
-
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
-
     next();
 });
 
@@ -46,7 +44,7 @@ app.get('/asset/js/index.js',function(req,res){
 });
 
 
-// intent getiriyor
+// intent i getiriyor
 app.get("/get/witai/entities",function(req,res){
   var wit = {
     data : {
@@ -81,6 +79,7 @@ app.post("/post/intent/expressions",function(req,res){
   });
 });
 
+
 // Vue cümle silmek için
 app.delete("/delete/intent/expressions",function(req,res){
   console.log(req.body.expression);
@@ -98,7 +97,8 @@ app.delete("/delete/intent/expressions",function(req,res){
 	});
 });
 
-// hello yazdığın da database i basıyor ekrana
+
+// hello yazdığında database i basıyor ekrana
 app.get('/hello',cors(), function (req, res) {
 	var ref = firebase.database().ref("/");
 
@@ -107,18 +107,50 @@ ref.once("value", function(snapshot) {
 	}, function (errorObject) {
 	  console.log("The read failed: " + errorObject.code);
 	});
-
 });
 
 
 app.post('/send/meaningful/sentence',cors(), function (req, res) {
-	var ref = firebase.database().ref("/answers");
-  var str = req.body.intent.toString();
-  var set = { str : req.body.message};
-  ref.set(set);
-  res.send({ resp : "OK"});
+	var ref = firebase.database().ref("/answer");
+  var set = { 'key' : req.body.intent, 'value' : req.body.message};
+  ref.child("/").equalTo(set).once("value", function(snapshot) {
+    var exists = snapshot.val();
+    console.log(exists);
+    if(!exists){
+      ref.push().set(set);
+    }
+  });
 
+  res.send({ resp : "OK"});
 });
+
+app.get('/get/meaningful/sentence',cors(), function (req, res) {
+  var ref = firebase.database().ref("/answer");
+  ref.once("value", function(snapshot) {
+      var array = snapshot.val();
+      for(var key in array){
+        if(array[key].key == req.query.intent){
+          res.send({resp : array[key].value});
+          return;
+        }
+      }
+        res.send({resp : "NOT_FOUND"});
+  });
+});
+
+app.delete('/delete/meaningful/sentence',cors(), function (req, res) {
+  var ref = firebase.database().ref("/answer");
+  ref.once("value", function(snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
+          if(itemSnapshot.val().key == req.query.intent){
+            itemSnapshot.delete();
+          }
+        });
+      });
+  });
+});
+
 
 //** WEB API for dialogflow**//
 app.get('/api/getMessage/dialogFlow',cors(),function(req,res){
@@ -165,9 +197,18 @@ app.get('/api/getMessage/witai',cors(),function(req,res){
       }
       console.log(maxValue);
 
-      var ref = firebase.database().ref("/answers/"+maxValue);
+      var ref = firebase.database().ref("/answer");
       ref.once("value", function(snapshot) {
-        res.send(snapshot);
+
+          snapshot.forEach(function(childSnapshot) {
+            console.log(childSnapshot.key);
+            ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
+              console.log(itemSnapshot.val().key + " "+maxValue);
+              if(itemSnapshot.val().key == maxValue){
+                res.send(itemSnapshot.val().value);
+              }
+            });
+          });
       });
     }else{
         res.send({resp : 'Herhangi bir intent bulunmadı.'});

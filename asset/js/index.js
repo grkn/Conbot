@@ -189,8 +189,8 @@ Vue.component('entity_answers',{
 					+'<div class="thumbnail">'
 					  +'<div class="caption">'
 						+'<h3>{{value}} </h3>'
-						+'<p><input type="text" v-model="sentence"></p>'
-						+'<p><label>{{$t("message.storedSentence")}} : {{sentence}}</span></p>'
+						+'<p><input type="text" v-model="sentence.value"></p>'
+						+'<p><label>{{$t("message.storedSentence")}} : {{sentence.default}}</span></p>'
 						+'<p><a  class="btn btn-primary" role="button" v-on:click="removeSentece(value)">{{$t("message.remove")}}</a>'
 						+'<a class="btn btn-default" role="button" v-on:click="addSentence(value)">{{$t("message.add")}}</a></p>'
 					  +'</div>'
@@ -200,23 +200,31 @@ Vue.component('entity_answers',{
 
 	methods : {
 		addSentence : function(id){
-			if(this.sentence.trim() != ""){
-				Vue.http.post("/send/meaningful/sentence",{intent : this.value ,message:this.sentence}).then(function(resp){
-						console.log(resp);
+			if(this.sentence.value.trim() != ""){
+				Vue.http.post("/send/meaningful/sentence",{intent : this.value ,message:this.sentence.value}).then(function(resp){
+
 				})
 			}
 		},
 		removeSentece : function(id){
-			if(this.expression.trim() != ""){
+			if(this.sentence.default.trim() != ""){
+				Vue.http.delete("/delete/meaningful/sentence",{intent : this.value ,message:this.sentence.default}).then(function(resp){
 
+				})
 			}
 		}
 	},
+	mounted : function(){
+		this.$nextTick(function () {
+			var sentence = this.sentence
+			Vue.http.get("/get/meaningful/sentence",{intent : this.value}).then(function(resp){
+					 sentence.default = resp.data;
+			})
+	  })
+	},
 	data :	function () {
-		return {sentence : "",expression : ""}
-
+		return {sentence : {value : "",default : ""},expression : ""}
 	}
-
 });
 
 
