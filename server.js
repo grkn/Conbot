@@ -145,7 +145,8 @@ app.delete('/delete/meaningful/sentence',cors(), function (req, res) {
       snapshot.forEach(function(childSnapshot) {
         ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
           if(itemSnapshot.val().key == req.body.intent){
-            itemSnapshot.delete();
+            ref.child("/").child(childSnapshot.key).remove();
+            res.send({resp : "OK"});
           }
         });
       });

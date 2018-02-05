@@ -81,7 +81,7 @@ var container = Vue.component('container',{
 								+'<h1>{{$t("message.header")}}</h1>'
 							+'</div>'
 							+'<span>'
-								+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>'
+								+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>&nbsp;&nbsp;'
 								+'<router-link :to="{ name: \'answers\'}">{{$t("message.answers")}}</router-link>'
 							+'</span>'
 							+'<span style="float:right">'
@@ -201,15 +201,19 @@ Vue.component('entity_answers',{
 	methods : {
 		addSentence : function(id){
 			if(this.sentence.value.trim() != ""){
+				var sentence = this.sentence;
 				Vue.http.post("/send/meaningful/sentence",{intent : this.value ,message:this.sentence.value}).then(function(resp){
-
+						sentence.default = sentence.value;
+						sentence.value = "";
 				})
 			}
 		},
 		removeSentece : function(id){
 			if(this.sentence.default.trim() != ""){
+				var sentence = this.sentence;
 				Vue.http.delete("/delete/meaningful/sentence",{intent : this.value ,message:this.sentence.default}).then(function(resp){
-
+						sentence.default = "";
+						sentence.value = "";
 				})
 			}
 		}
@@ -218,7 +222,9 @@ Vue.component('entity_answers',{
 		this.$nextTick(function () {
 			var sentence = this.sentence
 			Vue.http.get("/get/meaningful/sentence",{intent : this.value}).then(function(resp){
-					 sentence.default = resp.data.resp;
+					if(resp.data.resp != "NOT_FOUND"){
+							sentence.default = resp.data.resp;
+					}
 			})
 	  })
 	},
@@ -242,7 +248,7 @@ var answersContainer = Vue.component("answers",{
 								+'<h1>{{$t("message.header")}}</h1>'
 							+'</div>'
 							+'<span>'
-								+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>'
+								+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>&nbsp;&nbsp;'
 								+'<router-link :to="{ name: \'answers\'}">{{$t("message.answers")}}</router-link>'
 							+'</span>'
 							+'<span style="float:right">'
