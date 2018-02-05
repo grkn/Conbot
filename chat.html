@@ -81,11 +81,37 @@
 
 		$(document).ready(function(){
 			persistenceMenu.bind();
+			$(".input input").on('keypress',function(event){
+					if(event.which == 13){
+							//user write
+							$('#container .main-ul').append('<li class="mine"><div class="text"><span>'+event.target.value+'</span></div><br/></li>');
+							$("#container").animate({ scrollTop: $('#container ul').height()});
 
-			
-			$(".container").css("position","absolute");
-			$(".container").css("top",($(window).height() - 80)+"px");
-			
+							var request = $.ajax({
+							  url: "/mongo/insert/messages",
+							  method: "POST",
+							  data: {
+									"obj":
+									{"transaction":new Date().getTime(),"message":{"text" : event.target.value},"user_id":"gilleez","created_date": new Date()}
+								},
+							  dataType: "json"
+							});
+
+							request.done(function( msg ) {
+									if(msg.resp == "OK"){
+										event.target.value = "";
+									}
+							});
+
+							request.fail(function( jqXHR, textStatus ) {
+							  alert( "Request failed: " + textStatus );
+							});
+					}
+			});
+			$("#container").on("shown.bs.collapse", function(){
+		  	$("#container").animate({ scrollTop: $('#container ul').height()}, 1000);
+		  });
+
 		});
 	</script>
 	<style>
@@ -132,7 +158,6 @@
 		}
 
 		.input span{
-			height:50px;
 			width:9%;
 		}
 		.input input{
@@ -323,10 +348,10 @@
 		}
 	</style>
 </head>
-<body>
+<body style="width:100%;height:100%">
 
 	<div class="container">
-	 
+		<button style="width:300px" type="button" class="btn btn-info" data-toggle="collapse" data-target="#container">Simple collapsible</button>
 	  <div id="container" class="collapse">
 			<ul class="main-ul">
 				<li class="bot"><div class="text"><span>AAAAAA aaaaa aaaaaaaaaaa aaaa aaaaaaa</span></div><br/></li>
@@ -483,26 +508,28 @@
 				</div>
 				</li>
 			</ul>
-	  </div>
-	  <div class="input" style="width:300px;border:1px solid #c3c3c3;height:50px;">
 
-		<span class="persistenceMenu glyphicon glyphicon-menu-hamburger" >
-           <ul class="custom-drop-down ">
-				<li><a href="#">Action</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="#">Another action</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="#">Something else here</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="#">Separated link</a></li>
-				<li role="separator" class="divider"></li>
-			</ul>
+			<div class="input" style="width:280px;border:1px solid #c3c3c3;height:50px;">
 
-		</span><input type="text" name="input" placeholder="Mesaj Yazınız" style="border:none"/>
-		<a class="image" href="#"></a>
+		 <span class="persistenceMenu glyphicon glyphicon-menu-hamburger" >
+						 <ul class="custom-drop-down ">
+				 <li><a href="#">Action</a></li>
+				 <li role="separator" class="divider"></li>
+				 <li><a href="#">Another action</a></li>
+				 <li role="separator" class="divider"></li>
+				 <li><a href="#">Something else here</a></li>
+				 <li role="separator" class="divider"></li>
+				 <li><a href="#">Separated link</a></li>
+				 <li role="separator" class="divider"></li>
+			 </ul>
+
+		 </span><input type="text" name="input" placeholder="Mesaj Yazınız" style="border:none"/>
+		 <a class="image" href="#"></a>
+		 </div>
 	  </div>
-	  
-	   <button style="width:300px" type="button" class="btn btn-info" data-toggle="collapse" data-target="#container">Simple collapsible</button>
+
+
+
 	</div>
 
 </body>

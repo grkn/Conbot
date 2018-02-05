@@ -31,10 +31,10 @@ Vue.component('entity',{
 	template : '<div class="col-sm-6 col-md-4">'
 					+'<div class="thumbnail">'
 					  +'<div class="caption">'
-						+'<div><span style="float:right" v-on:click="removeIntent">x</span></div>'
+						+'<div><span style="float:right;cursor:pointer;" v-on:click="removeIntent">X</span></div>'
 						+'<h3>{{value}} </h3>'
 						+'<p><input type="text" v-model="sentence"></p>'
-						+'<p><label>{{$t("message.storedSentence")}} : </label><span><select v-model="expression"><option v-for="exp in expressions" >{{ exp }}</option></select></span></p>'
+						+'<p><label>{{$t("message.storedSentence")}} : </label><div><select v-model="expression"><option v-for="exp in expressions" >{{ exp }}</option></select></div></p>'
 						+'<p><a  class="btn btn-primary" role="button" v-on:click="removeSentece(value)">{{$t("message.remove")}}</a>'
 						+'<a class="btn btn-default" role="button" v-on:click="addSentence(value)">{{$t("message.add")}}</a></p>'
 					  +'</div>'
@@ -46,7 +46,8 @@ Vue.component('entity',{
 		addSentence : function(id){
 			console.log(id);
 			if(this.sentence.trim() != ""){
-					this.expressions.push(this.sentence)
+					this.expressions.unshift(this.sentence);
+					this.sentence = "";
 					Vue.http.post("/post/intent/expressions",{value : this.value ,expressions:this.expressions}).then(function(resp){
 
 					})
@@ -96,7 +97,7 @@ var container = Vue.component('container',{
 						+'</div>'
 				+'</div>'
 				+'<div class="content"><div style="width:20%;display:inline-block">'
-				+'<ul v-for="intent in this.original"><li v-for="i in intent"><span v-on:click="showOnlyThisItem(i)">{{i.value}}</span></li></ul></div><div style="width:80%;display:inline-block;vertical-align: top;" ><div >'
+				+'<ul v-for="intent in this.original"><li v-for="i in intent"><span style="cursor:pointer;" v-on:click="showOnlyThisItem(i)">{{i.value}}</span></li></ul></div><div style="width:80%;display:inline-block;vertical-align: top;" ><div >'
 				+'<label>{{$t("message.search")}}</label> <input type="text" v-model="searchText" v-on:keyup="search"/>'
 				+'<div style="float:right"><label>{{$t("message.createLabel")}} :</label>&nbsp;<input type="text" v-model="intentName"/>&nbsp;&nbsp;<button type="button" class="btn btn-info" v-on:click="createIntent">{{$t("message.create")}}</button></div>'
 				+'</div><br/><br/>'
@@ -208,7 +209,7 @@ Vue.component('entity_answers',{
 					  +'<div class="caption">'
 						+'<h3>{{value}} </h3>'
 						+'<p><input type="text" v-model="sentence.value"></p>'
-						+'<p><label>{{$t("message.storedSentence")}} : {{sentence.default}}</span></p>'
+						+'<p><label>{{$t("message.savedAnswer")}} : {{sentence.default}}</span></p>'
 						+'<p><a  class="btn btn-primary" role="button" v-on:click="removeSentece(value)">{{$t("message.remove")}}</a>'
 						+'<a class="btn btn-default" role="button" v-on:click="addSentence(value)">{{$t("message.add")}}</a></p>'
 					  +'</div>'
@@ -263,7 +264,7 @@ var answersContainer = Vue.component("answers",{
 	template: 	'<div style="position:relative;width:80%;left:10%">'
 						+'<div class="header"><div class="page-header">'
 							+'<div  style="text-align:center">'
-								+'<h1>{{$t("message.header")}}</h1>'
+								+'<h1>{{$t("message.answerPage")}}</h1>'
 							+'</div>'
 							+'<span>'
 								+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>&nbsp;&nbsp;'
@@ -275,7 +276,7 @@ var answersContainer = Vue.component("answers",{
 						+'</div>'
 				+'</div>'
 				+'<div class="content"><div style="width:20%;display:inline-block">'
-				+'<ul v-for="intent in this.original"><li v-for="i in intent"><span v-on:click="showOnlyThisItem(i)">{{i.value}}</span></li></ul></div><div style="width:80%;display:inline-block;vertical-align: top;" ><div ><label>{{$t("message.search")}}</label> <input type="text" v-model="searchText" v-on:keyup="search"/></div><br/><br/>'
+				+'<ul v-for="intent in this.original"><li v-for="i in intent"><span style="cursor:pointer;" v-on:click="showOnlyThisItem(i)">{{i.value}}</span></li></ul></div><div style="width:80%;display:inline-block;vertical-align: top;" ><div ><label>{{$t("message.search")}}</label> <input type="text" v-model="searchText" v-on:keyup="search"/></div><br/><br/>'
 				+'<row_answers v-for="entityArray in this.intentList"  v-bind:array="entityArray" ></row_answers></div></div>'
 				+'<div class="footer"></div></div>',
 	methods : {
