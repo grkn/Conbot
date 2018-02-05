@@ -97,6 +97,37 @@ app.delete("/delete/intent/expressions",function(req,res){
 	});
 });
 
+app.delete("/delete/intent",function(req,res){
+  var wit = {
+    data : {
+    },
+    headers : {
+      "Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
+      "Content-Type": "application/json"
+    }
+  }
+  client.delete("https://api.wit.ai/entities/intent/values/"+req.body.value,wit,function(response){
+    console.log(response);
+		res.send(response);
+	});
+})
+
+app.post("/create/intent",function(req,res){
+  var wit = {
+    data : {
+      "value":req.body.value
+    },
+    headers : {
+      "Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
+      "Content-Type": "application/json"
+    }
+  }
+  client.post("https://api.wit.ai/entities/intent/values",wit,function(response){
+    console.log(response);
+		res.send(response);
+	});
+})
+
 
 // hello yazdığında database i basıyor ekrana
 app.get('/hello',cors(), function (req, res) {
@@ -109,7 +140,7 @@ ref.once("value", function(snapshot) {
 	});
 });
 
-
+/** Anlamlu Cümle Tanımı**/
 app.post('/send/meaningful/sentence',cors(), function (req, res) {
 	var ref = firebase.database().ref("/answer");
   var set = { 'key' : req.body.intent, 'value' : req.body.message};
@@ -124,7 +155,7 @@ app.post('/send/meaningful/sentence',cors(), function (req, res) {
   });
   res.send({ resp : "OK"});
 });
-
+/** Anlamlu Cümle Tanımı**/
 app.get('/get/meaningful/sentence',cors(), function (req, res) {
   var ref = firebase.database().ref("/answer");
   ref.once("value", function(snapshot) {
@@ -138,7 +169,7 @@ app.get('/get/meaningful/sentence',cors(), function (req, res) {
         res.send({resp : "NOT_FOUND"});
   });
 });
-
+/** Anlamlu Cümle Tanımı**/
 app.delete('/delete/meaningful/sentence',cors(), function (req, res) {
   var ref = firebase.database().ref("/answer");
   ref.once("value", function(snapshot) {
@@ -188,7 +219,6 @@ app.get('/api/getMessage/witai',cors(),function(req,res){
   client.get("https://api.wit.ai/message?q="+encodeURIComponent(req.query.message),wit,function(response){
     if(response.entities && response.entities.intent && response.entities.intent.length > 0){
 
-      console.log(response.entities.intent);
       var max = -1;
       var maxValue="";
       for(var i= 0 ; i < response.entities.intent.length ; i++ ){
@@ -197,7 +227,6 @@ app.get('/api/getMessage/witai',cors(),function(req,res){
           max = response.entities.intent[i].confidence;
         }
       }
-      console.log(maxValue);
 
       var ref = firebase.database().ref("/answer");
       ref.once("value", function(snapshot) {
@@ -205,7 +234,6 @@ app.get('/api/getMessage/witai',cors(),function(req,res){
           snapshot.forEach(function(childSnapshot) {
             console.log(childSnapshot.key);
             ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
-              console.log(itemSnapshot.val().key + " "+maxValue);
               if(itemSnapshot.val().key == maxValue){
                 res.send(itemSnapshot.val().value);
               }

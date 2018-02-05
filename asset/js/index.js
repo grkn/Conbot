@@ -31,6 +31,7 @@ Vue.component('entity',{
 	template : '<div class="col-sm-6 col-md-4">'
 					+'<div class="thumbnail">'
 					  +'<div class="caption">'
+						+'<div><span style="float:right" v-on:click="removeIntent">x</span></div>'
 						+'<h3>{{value}} </h3>'
 						+'<p><input type="text" v-model="sentence"></p>'
 						+'<p><label>{{$t("message.storedSentence")}} : </label><span><select v-model="expression"><option v-for="exp in expressions" >{{ exp }}</option></select></span></p>'
@@ -59,6 +60,11 @@ Vue.component('entity',{
 
 				});
 			}
+		},
+		removeIntent : function(){
+			Vue.http.delete("/delete/intent",{value : this.value}).then(function(resp){
+				window.location.reload();
+			});
 		}
 	},
 	data :	function () {
@@ -90,12 +96,24 @@ var container = Vue.component('container',{
 						+'</div>'
 				+'</div>'
 				+'<div class="content"><div style="width:20%;display:inline-block">'
-				+'<ul v-for="intent in this.original"><li v-for="i in intent"><span v-on:click="showOnlyThisItem(i)">{{i.value}}</span></li></ul></div><div style="width:80%;display:inline-block;vertical-align: top;" ><div ><label>{{$t("message.search")}}</label> <input type="text" v-model="searchText" v-on:keyup="search"/></div><br/><br/>'
+				+'<ul v-for="intent in this.original"><li v-for="i in intent"><span v-on:click="showOnlyThisItem(i)">{{i.value}}</span></li></ul></div><div style="width:80%;display:inline-block;vertical-align: top;" ><div >'
+				+'<label>{{$t("message.search")}}</label> <input type="text" v-model="searchText" v-on:keyup="search"/>'
+				+'<div style="float:right"><label>{{$t("message.createLabel")}} :</label>&nbsp;<input type="text" v-model="intentName"/>&nbsp;&nbsp;<button type="button" class="btn btn-info" v-on:click="createIntent">{{$t("message.create")}}</button></div>'
+				+'</div><br/><br/>'
 				+'<row v-for="entityArray in this.intentList"  v-bind:array="entityArray" ></row></div></div>'
 				+'<div class="footer"></div></div>',
 	methods : {
 		showOnlyThisItem : function(entity){
 			this.intentList=[[entity]];
+		},
+		createIntent : function(){
+			if(this.intentName.trim() != ""){
+					console.log(this.intentName);
+					Vue.http.post("/create/intent",{value : this.intentName }).then(function(resp){
+							window.location.reload();
+					})
+			}
+
 		},
 		search : function(){
 			if(this.searchText.trim() == ""){
@@ -177,7 +195,7 @@ var container = Vue.component('container',{
 	},
 	data :	function () {
 		return {intentList :[], original :[],
-		searchText : ""}
+		searchText : "",intentName : ""}
 
 	}
 });
