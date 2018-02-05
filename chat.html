@@ -9,7 +9,7 @@
   integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
   crossorigin="anonymous"></script>
 
-	 
+
 	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 	<!-- Optional theme -->
@@ -17,7 +17,7 @@
 
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-		
+
 	<script type="text/javascript">
 		var persistenceMenu = {
 			toggle : function(el){
@@ -26,14 +26,14 @@
 			bind : function(){
 				$(".persistenceMenu").on("click",function(event){
 					persistenceMenu.toggle($(".custom-drop-down"));
-				});	
+				});
 			}
-			
+
 		}
-		
+
 		var slider = {
 			createSlider : function(el){
-			
+
 				var slideCount = $(el).find('ul li').length;
 				var slideWidth = $(el).find('ul li').width();
 				var max = -1;
@@ -44,9 +44,9 @@
 				}
 				var slideHeight =max;
 				var sliderUlWidth = slideCount * slideWidth;
-				
+
 				$(el).css({ width: slideWidth, height: slideHeight});
-				
+
 				$(el).find('ul').css({ width: sliderUlWidth, marginLeft: - slideWidth });
 				$(el).find('ul li').last().prependTo($(el).find('ul'));
 
@@ -77,14 +77,14 @@
 				});
 			}
 		}
-	
-		
+
+
 		$(document).ready(function(){
 			persistenceMenu.bind();
 		});
 	</script>
 	<style>
-	
+
 		*{
 			-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 			-moz-box-sizing: border-box; /* Firefox, other Gecko */
@@ -92,14 +92,13 @@
 		}
 		.mine{
 			text-align:right;
-			
+
 		}
 		.bot{
 			text-align:left;
 		}
-		
-		.mine > span{
-			padding:10px 10px 10px 10px;
+
+		.mine .text{
 			border-bottom-left-radius: 1em;
 			border-bottom-right-radius: 1.0em;
 			border-top-right-radius: 4px;
@@ -107,15 +106,24 @@
 			background-color: #3498db;
 			color: #fff;
 		}
-		.bot > span{
+
+		.mine .text span{
 			padding:10px 10px 10px 10px;
+			color: #fff;
+		}
+
+		.bot  .text{
 			background-color: #c3c3c3;
 			border-bottom-left-radius: 1.0em;
 			border-top-left-radius: 4px;
 			border-bottom-right-radius: 1.0em;
 			border-top-right-radius: 1.0em;
+		}
+		.bot  .text span{
+			padding:10px 10px 10px 10px;
 			overflow-wrap: break-word;
 		}
+
 		.input span{
 			height:50px;
 			width:9%;
@@ -154,7 +162,7 @@
 				-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
 				box-shadow: 0 6px 12px rgba(0,0,0,.175);
 		}
-		
+
 		.custom-drop-down .divider{
 			height: 1px;
 			margin: 9px 0;
@@ -170,14 +178,14 @@
 				color: #333;
 				white-space: nowrap;
 		}
-		
+
 		.generic_button ul{
 			list-style : none;
 			padding-left:0px;
 			margin-left:0px;
 			margin-top:15px;
 		}
-		
+
 		.generic_button ul li{
 			line-height: 2em;
 		}
@@ -194,8 +202,8 @@
 			overflow-wrap: break-word;
 			white-space: pre-wrap;
 		}
-		
-		
+
+
 		.slider {
 		  position: relative;
 		  overflow: hidden;
@@ -222,7 +230,7 @@
 		  text-align: center;
 		  line-height: 150px;
 		}
-		
+
 		.slider ul li .text-title-subtitle{
 			line-height:20px;
 			width : 250px !important;
@@ -231,7 +239,7 @@
 			border-bottom : 1px solid #c3c3c3;
 		}
 
-		
+
 		a.control_prev, a.control_next {
 		  position: absolute;
 		  top:20%;
@@ -262,7 +270,7 @@
 		  right: 0;
 		  border-radius: 2px 0 0 2px;
 		}
-		
+
 		.main-ul{
 			list-style:none;
 			line-height: 2.8em;
@@ -293,27 +301,44 @@
 			width:20%;
 			float:left;
 		}
-		
-		
-		
+
+		.quickReply .quickContent{
+			background-color: #c3c3c3;
+			border-bottom-left-radius: 1.0em;
+			border-top-left-radius: 4px;
+			border-bottom-right-radius: 1.0em;
+			border-top-right-radius: 1.0em;
+		}
+
+		.quickReply .quickContent span{
+			padding:10px 10px 10px 10px;
+			overflow-wrap: break-word;
+		}
+
+		.quickReply div button{
+			border-bottom-left-radius: 1.0em;
+			border-top-left-radius: 1.0em;
+			border-bottom-right-radius: 1.0em;
+			border-top-right-radius: 1.0em;
+		}
 	</style>
 </head>
 <body>
-	
+
 	<div class="container">
 	  <button style="width:300px" type="button" class="btn btn-info" data-toggle="collapse" data-target="#container">Simple collapsible</button>
 	  <div id="container" class="collapse in">
 			<ul class="main-ul">
-				<li class="bot"><span>AAAAAA aaaaa aaaaaaaaaaa aaaa aaaaaaa</span></li>
-				<li class="mine"><span>BBBBB</span></li>
-				<li class="mine"><span>CCCCCC</span></li>
-				<li class="bot"><span>DDDDDD</span></li>
-				<li class="bot"><span>DDDDDD</span></li>
-				<li class="bot"><span>DDDDDD</span></li>
+				<li class="bot"><div class="text"><span>AAAAAA aaaaa aaaaaaaaaaa aaaa aaaaaaa</span></div><br/></li>
+				<li class="mine"><div class="text"><span>BBBBB</span></div><br/></li>
+				<li class="mine"><div class="text"><span>CCCCCC</span></div><br/></li>
+				<li class="bot"><div class="text"><span>DDDDDD</span></div><br/></li>
+				<li class="bot"><div class="text"><span>DDDDDD</span></div><br/></li>
+				<li class="bot"><div class="text"><span>DDDDDD</span></div><br/></li>
 				<li class="bot">
 					<div class="generic_button">
 					  <ul >
-						
+
 						<li>
 							<div class="text-title-subtitle">
 								<div><span>Aşağıdakilerden Birini Seçiniz AAAAAA AAAAAAAAA AAAAAAAAAAAA AAAAAAAAA</span></div>
@@ -321,9 +346,9 @@
 								<button style="width:200px" type="button" class="btn btn-info">Button</button>
 								<button style="width:200px" type="button" class="btn btn-info">Button</button>
 							</div>
-							
+
 						</li>
-					  </ul>  
+					  </ul>
 					</div>
 				</li>
 				<li class="bot">
@@ -331,7 +356,7 @@
 					  <a href="javascript:void(0)" class="control_next">></a>
 					  <a href="javascript:void(0)" class="control_prev"><</a>
 					  <ul>
-						
+
 						<li>
 							<img width="250px" height="150px" src="https://beebom-redkapmedia.netdna-ssl.com/wp-content/uploads/2016/01/Reverse-Image-Search-Engines-Apps-And-Its-Uses-2016.jpg"/>
 							<div class="text-title-subtitle">
@@ -348,7 +373,7 @@
 								<div>Subtitle</div>
 								<button style="width:250px" type="button" class="btn btn-info">Button</button>
 							</div>
-						
+
 						</li>
 						<li>
 							<img width="250px" height="150px" src="https://static.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg"/>
@@ -359,9 +384,9 @@
 								<button style="width:250px" type="button" class="btn btn-info">Button</button>
 								<button style="width:250px" type="button" class="btn btn-info">Button</button>
 							</div>
-							
+
 						</li>
-					  </ul>  
+					  </ul>
 					</div>
 					<script>
 						$(document).ready(function(){
@@ -374,7 +399,7 @@
 					  <a href="javascript:void(0)" class="control_next">></a>
 					  <a href="javascript:void(0)" class="control_prev"><</a>
 					  <ul>
-						
+
 						<li>
 							<img width="250px" height="150px" src="https://beebom-redkapmedia.netdna-ssl.com/wp-content/uploads/2016/01/Reverse-Image-Search-Engines-Apps-And-Its-Uses-2016.jpg"/>
 							<div class="text-title-subtitle">
@@ -391,7 +416,7 @@
 								<div>Subtitle</div>
 								<button style="width:250px" type="button" class="btn btn-info">Button</button>
 							</div>
-						
+
 						</li>
 						<li>
 							<img width="250px" height="150px" src="https://static.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg"/>
@@ -402,9 +427,9 @@
 								<button style="width:250px" type="button" class="btn btn-info">Button</button>
 								<button style="width:250px" type="button" class="btn btn-info">Button</button>
 							</div>
-							
+
 						</li>
-					  </ul>  
+					  </ul>
 					</div>
 					<script>
 						$(document).ready(function(){
@@ -412,7 +437,7 @@
 						});
 					</script>
 				</li>
-				
+
 				<li class="bot">
 					<div class="list-view">
 						<div class="list-item">
@@ -438,13 +463,29 @@
 						<div class="list-item">
 							<div><button style="width:250px" type="button" class="btn btn-info">View More</button></div>
 						</div>
-						
+
 					</div>
+				</li>
+
+				<li class="bot">
+					<div class="quickReply">
+						<div class="quickContent">
+								<span>Merhaba, Intentlerimi beğendin mi ? Beğendiysen lütfen cevap ver....</span>
+						</div>
+						<div style="text-align:center">
+							<button style="width:40%" type="button" class="btn btn-info">Button</button>
+							<button style="width:40%" type="button" class="btn btn-info">Button</button>
+						</div>
+						<div style="text-align:center">
+							<button style="width:40%" type="button" class="btn btn-info">Button</button>
+
+						</div>
+				</div>
 				</li>
 			</ul>
 	  </div>
 	  <div class="input" style="width:300px;border:1px solid #c3c3c3;height:50px;">
-		
+
 		<span class="persistenceMenu glyphicon glyphicon-menu-hamburger" >
            <ul class="custom-drop-down ">
 				<li><a href="#">Action</a></li>
@@ -456,11 +497,11 @@
 				<li><a href="#">Separated link</a></li>
 				<li role="separator" class="divider"></li>
 			</ul>
-			
-		</span><input type="text" name="input" placeholder="Mesaj Yazınız" style="border:none"/> 
+
+		</span><input type="text" name="input" placeholder="Mesaj Yazınız" style="border:none"/>
 		<a class="image" href="#"></a>
 	  </div>
 	</div>
-	
+
 </body>
 </html>
