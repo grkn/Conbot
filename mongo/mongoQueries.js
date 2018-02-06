@@ -33,6 +33,13 @@ var mongoQueries = class MongoQueries {
     });
   }
 
+  findByQuery(collectionName,query,callback){
+    this.db.db("conbot").collection(collectionName).find(query).toArray(function(err, result) {
+     if (err) throw err;
+      callback(result);
+    });
+  }
+
 
 }
 

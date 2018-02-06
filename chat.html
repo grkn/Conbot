@@ -28,8 +28,29 @@
 					persistenceMenu.toggle($(".custom-drop-down"));
 				});
 			}
-
 		}
+
+		var load = {
+			load : function(){
+				var request = $.ajax({
+					url: "/mongo/findByQuery/messages",
+					method: "POST",
+					data: {
+						query : {"user_id":"gilleez"}
+					},
+					dataType: "json"
+				});
+
+				request.done(function( msg ) {
+							console.log(msg);
+				});
+
+				request.fail(function( jqXHR, textStatus ) {
+					alert( "Request failed: " + textStatus );
+				});
+
+			}
+		};
 
 		var slider = {
 			createSlider : function(el){
@@ -81,6 +102,9 @@
 
 		$(document).ready(function(){
 			persistenceMenu.bind();
+
+			load.load();
+
 			$(".input input").on('keypress',function(event){
 					if(event.which == 13){
 							//user write
@@ -88,7 +112,7 @@
 							$("#container").animate({ scrollTop: $('#container ul').height()});
 
 							var request = $.ajax({
-							  url: "/mongo/insert/messages",
+							  url: "/api/getMessage/witai/messages",
 							  method: "POST",
 							  data: {
 									"obj":
@@ -98,9 +122,9 @@
 							});
 
 							request.done(function( msg ) {
-									if(msg.resp == "OK"){
 										event.target.value = "";
-									}
+										$('#container .main-ul').append('<li class="bot"><div class="text"><span>'+msg.text+'</span></div><br/></li>');
+										$("#container").animate({ scrollTop: $('#container ul').height()});
 							});
 
 							request.fail(function( jqXHR, textStatus ) {

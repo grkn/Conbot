@@ -80,6 +80,13 @@ app.get("/mongo/find/:collectionName",function(req,res){
   });
 });
 
+app.post("/mongo/findByQuery/:collectionName",function(req,res){
+  instanceMongoQueries.findByQuery(req.params.collectionName,req.body.query,function(result){
+    console.log(result);
+    res.send(result);
+  });
+});
+
 // wit den intent i getiriyor
 app.get("/get/witai/entities",function(req,res){
   var wit = {
@@ -208,7 +215,7 @@ app.get('/api/getMessage/dialogFlow',cors(),function(req,res){
 })
 
 // WEB API for wit.ai
-app.get('/api/getMessage/witai',cors(),function(req,res){
+app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
   var wit = {
     data : {
       parameters: {}
@@ -218,7 +225,7 @@ app.get('/api/getMessage/witai',cors(),function(req,res){
       "Content-Type": "application/json"
     }
   }
-  client.get("https://api.wit.ai/message?q="+encodeURIComponent(req.query.message),wit,function(response){
+  client.get("https://api.wit.ai/message?q="+encodeURIComponent(req.body.obj.message.text),wit,function(response){
     if(response.entities && response.entities.intent && response.entities.intent.length > 0){
 
       console.log(response.entities.intent);
@@ -240,13 +247,23 @@ app.get('/api/getMessage/witai',cors(),function(req,res){
             ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
               console.log(itemSnapshot.val().key + " "+maxValue);
               if(itemSnapshot.val().key == maxValue){
-                res.send(itemSnapshot.val().value);
+
+                if(req.body.obj){
+                  instanceMongoQueries.insertOne(req.params.collectionName,req.body.obj,function(resp,obj){
+                      res.send({text : itemSnapshot.val().value});
+                  });
+                  var obj = {"transaction":req.body.obj.transaction,"message":{text : itemSnapshot.val().value},"user_id":"BOT","created_date": new Date()};
+
+                  instanceMongoQueries.insertOne(req.params.collectionName,obj,function(resp,obj){
+
+                  });
+                }
               }
             });
           });
       });
     }else{
-        res.send({resp : 'Herhangi bir intent bulunmadı.'});
+        res.send({text : 'Herhangi bir intent bulunmadı.'});
     }
   });
 })
