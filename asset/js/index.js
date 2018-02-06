@@ -209,7 +209,7 @@ Vue.component('popup',{
 	        +'<h4 class="modal-title">Modal Header</h4>'
 	      +'</div>'
 	      +'<div class="modal-body">'
-	        +'<div><ul><select v-model="selectedIntent"><optgroup  v-for="intentList in list"><option v-for="intent in intentList" value="intent.value">{{intent.value}}</option></optgroup></select></ul></div>'
+	        +'<div><ul><select v-model="selectedIntent"><optgroup  v-for="intentList in list"><option v-for="intent in intentList" v-bind:value="intent.value">{{intent.value}}</option></optgroup></select></ul></div>'
 					+'<div>'
 						+'<button style="float:right" class="btn btn-info" v-on:click="removeInputFields()">{{$t("message.remove")}}</button>'
 						+'<button style="float:right" class="btn btn-info" v-on:click="incrementInputFields()">{{$t("message.add")}}</button>'
@@ -263,7 +263,8 @@ Vue.component('popup',{
 			}
 		},
 		save : function(){
-			Vue.http.post("/view/create/carousel",{obj : this.carousel},function(resp){
+			console.log(this.selectedIntent);
+			Vue.http.post("/view/create/carousel",{obj : this.carousel,intent : this.selectedIntent},function(resp){
 				console.log(resp);
 			});
 		}
@@ -328,7 +329,12 @@ Vue.component('entity_answers',{
 			var sentence = this.sentence
 			Vue.http.get("/get/meaningful/sentence",{intent : this.value}).then(function(resp){
 					if(resp.data.resp != "NOT_FOUND"){
+						if(resp.data.type){
+							sentence.default = resp.data.type;
+						}else{
 							sentence.default = resp.data.resp;
+						}
+
 					}
 			})
 	  })
@@ -361,7 +367,7 @@ var answersContainer = Vue.component("answers",{
 							+'</span>'
 						+'</div>'
 				+'</div>'
-				+'<div class="content"><div><createCarousel v-bind:entityList="this.original"></createCarousel></div><div style="width:20%;display:inline-block">'
+				+'<div class="content"><div style="position:relative;left:20%;margin-bottom:40px"><createCarousel v-bind:entityList="this.original"></createCarousel></div><div style="width:20%;display:inline-block">'
 				+'<ul v-for="intent in this.original"><li v-for="i in intent"><span style="cursor:pointer;" v-on:click="showOnlyThisItem(i)">{{i.value}}</span></li></ul></div><div style="width:80%;display:inline-block;vertical-align: top;" ><div ><label>{{$t("message.search")}}</label> <input type="text" v-model="searchText" v-on:keyup="search"/></div><br/><br/>'
 				+'<row_answers v-for="entityArray in this.intentList"  v-bind:array="entityArray" ></row_answers></div></div>'
 				+'<div class="footer"></div></div>',

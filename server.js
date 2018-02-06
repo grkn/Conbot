@@ -154,13 +154,16 @@ app.post('/send/meaningful/sentence',cors(), function (req, res) {
 	var ref = firebase.database().ref("/answer");
   var set = { 'key' : req.body.intent, 'value' : req.body.message};
   ref.child("/").once("value", function(snapshot) {
+    var found = false;
     snapshot.forEach(function(userSnapshot) {
         if(userSnapshot.val().key == set.key){
           ref.child("/").child(userSnapshot.key).update(set);
-          return;
+          found = true;
         }
     });
-    ref.child("/").push(set);
+    if(!found){
+      ref.child("/").push(set)
+    }
   });
   res.send({ resp : "OK"});
 });
@@ -172,7 +175,7 @@ app.get('/get/meaningful/sentence',cors(), function (req, res) {
       var array = snapshot.val();
       for(var key in array){
         if(array[key].key == req.query.intent){
-          res.send({resp : array[key].value});
+          res.send({resp : array[key].value , type : array[key].type});
           return;
         }
       }
@@ -260,6 +263,7 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
     }
   }
   client.get("https://api.wit.ai/message?q="+encodeURIComponent(req.body.obj.message.text),wit,function(response){
+    console.log(response.entities);
     if(response.entities && response.entities.intent && response.entities.intent.length > 0){
 
       console.log(response.entities.intent);
@@ -284,7 +288,7 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
                 if(req.body.obj){
                   req.body.obj.created_date = new Date();
                   instanceMongoQueries.insertOne(req.params.collectionName,req.body.obj,function(resp,obj){
-                      res.send({text : itemSnapshot.val().value});
+                      res.send({text : itemSnapshot.val().value,type : itemSnapshot.val().type, intent : itemSnapshot.val().key});
                   });
                   var obj = {"transaction":req.body.obj.transaction,"message":{text : itemSnapshot.val().value},"user_id":"BOT","created_date": new Date()};
 
@@ -310,7 +314,23 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
 
 app.post('/view/create/carousel',cors(),function(req,res){
     var carousel = new Carousel(req.body.obj);
-    carousel.createListCarousel();
+    res.send(carousel.createListCarousel());
+    var ref = firebase.database().ref("/answer");
+    var set = { 'key' : req.body.intent, 'value' : req.body.obj , 'type' : 'carousel'};
+    ref.child("/").once("value", function(snapshot) {
+      var found = false;
+      snapshot.forEach(function(userSnapshot) {
+          if(userSnapshot.val().key == set.key){
+            ref.child("/").child(userSnapshot.key).update(set);
+            found = true;
+          }
+      });
+      if(!found){
+        ref.child("/").push(set)
+      }
+    });
+    res.send({ resp : "OK"});
+
 });
 
 app.get('/chatbotdeploy/get',cors(), function (req, res) {
