@@ -82,7 +82,6 @@ app.get("/mongo/find/:collectionName",function(req,res){
 
 app.post("/mongo/findByQuery/:collectionName",function(req,res){
   instanceMongoQueries.findByQuery(req.params.collectionName,req.body.query,function(result){
-    console.log(result);
     res.send(result);
   });
 });
@@ -237,18 +236,18 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
           max = response.entities.intent[i].confidence;
         }
       }
-      console.log(maxValue);
 
       var ref = firebase.database().ref("/answer");
       ref.once("value", function(snapshot) {
 
           snapshot.forEach(function(childSnapshot) {
-            console.log(childSnapshot.key);
+
             ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
-              console.log(itemSnapshot.val().key + " "+maxValue);
+
               if(itemSnapshot.val().key == maxValue){
 
                 if(req.body.obj){
+                  req.body.obj.created_date = new Date();
                   instanceMongoQueries.insertOne(req.params.collectionName,req.body.obj,function(resp,obj){
                       res.send({text : itemSnapshot.val().value});
                   });
@@ -263,6 +262,12 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
           });
       });
     }else{
+      req.body.obj.created_date = new Date();
+      instanceMongoQueries.insertOne(req.params.collectionName,req.body.obj,function(resp,obj){
+      });
+      var obj = {"transaction":req.body.obj.transaction,"message":{text : 'Herhangi bir intent bulunmadı.'},"user_id":"BOT","created_date": new Date()};
+      instanceMongoQueries.insertOne(req.params.collectionName,obj,function(resp,obj){
+      });
         res.send({text : 'Herhangi bir intent bulunmadı.'});
     }
   });
