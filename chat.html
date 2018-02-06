@@ -119,7 +119,13 @@
 					for(var i=0 ; i < msg.length;i++){
 
 						if(msg[i].user_id == "BOT"){
-							$('#container .main-ul').append('<li class="bot"><div class="text"><span>'+msg[i].message.text+'</span></div><br/></li>');
+							if(msg[i].message.type && msg[i].message.type=='carousel'){
+								$('#container .main-ul').append('<li class="bot">'+views.carousel(msg[i].message)+'</li>');
+								slider.createSlider($(".slider_"+msg[i].message.intent));
+							}else{
+								$('#container .main-ul').append('<li class="bot"><div class="text"><span>'+msg[i].message.text+'</span></div><br/></li>');
+							}
+
 						}else{
 							$('#container .main-ul').append('<li class="mine"><div class="text"><span>'+msg[i].message.text+'</span></div><br/></li>');
 						}

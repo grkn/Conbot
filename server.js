@@ -290,7 +290,7 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
                   instanceMongoQueries.insertOne(req.params.collectionName,req.body.obj,function(resp,obj){
                       res.send({text : itemSnapshot.val().value,type : itemSnapshot.val().type, intent : itemSnapshot.val().key});
                   });
-                  var obj = {"transaction":req.body.obj.transaction,"message":{text : itemSnapshot.val().value},"user_id":"BOT","created_date": new Date()};
+                  var obj = {"transaction":req.body.obj.transaction,"message":{text : itemSnapshot.val().value ,type : itemSnapshot.val().type, intent : itemSnapshot.val().key},"user_id":"BOT","created_date": new Date()};
 
                   instanceMongoQueries.insertOne(req.params.collectionName,obj,function(resp,obj){
 
