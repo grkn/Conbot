@@ -194,6 +194,39 @@ app.delete('/delete/meaningful/sentence',cors(), function (req, res) {
   });
 });
 
+app.delete("/delete/intent",cors(),function(req,res){
+  var wit = {
+    data : {
+    },
+    headers : {
+      "Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
+      "Content-Type": "application/json"
+    }
+  }
+  client.delete("https://api.wit.ai/entities/intent/values/"+encodeURIComponent(req.body.value),wit,function(response){
+    res.send(response);
+  });
+
+});
+
+
+app.post("/create/intent",cors(),function(req,res){
+  var wit = {
+    data : {
+      "value" : req.body.value,
+      "expressions":[]
+    },
+    headers : {
+      "Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
+      "Content-Type": "application/json"
+    }
+  }
+  client.post("https://api.wit.ai/entities/intent/values",wit,function(response){
+    res.send(response);
+  });
+
+});
+
 
 //** WEB API for dialogflow**//
 app.get('/api/getMessage/dialogFlow',cors(),function(req,res){

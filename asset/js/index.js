@@ -109,7 +109,6 @@ var container = Vue.component('container',{
 		},
 		createIntent : function(){
 			if(this.intentName.trim() != ""){
-					console.log(this.intentName);
 					Vue.http.post("/create/intent",{value : this.intentName }).then(function(resp){
 							window.location.reload();
 					})
