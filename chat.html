@@ -36,13 +36,20 @@
 					url: "/mongo/findByQuery/messages",
 					method: "POST",
 					data: {
-						query : {"user_id":"gilleez"}
+						query : {}
 					},
 					dataType: "json"
 				});
 
 				request.done(function( msg ) {
-							console.log(msg);
+					for(var i=0 ; i < msg.length;i++){
+
+						if(msg[i].user_id == "BOT"){
+							$('#container .main-ul').append('<li class="bot"><div class="text"><span>'+msg[i].message.text+'</span></div><br/></li>');
+						}else{
+							$('#container .main-ul').append('<li class="mine"><div class="text"><span>'+msg[i].message.text+'</span></div><br/></li>');
+						}
+					}
 				});
 
 				request.fail(function( jqXHR, textStatus ) {
