@@ -206,7 +206,7 @@ Vue.component('popup',{
 	    +'<div class="modal-content">'
 	      +'<div class="modal-header">'
 	        +'<button type="button" class="close" data-dismiss="modal">&times;</button>'
-	        +'<h4 class="modal-title">Modal Header</h4>'
+	        +'<h4 class="modal-title">Carousel</h4>'
 	      +'</div>'
 	      +'<div class="modal-body">'
 	        +'<div><ul><select v-model="selectedIntent"><optgroup  v-for="intentList in list"><option v-for="intent in intentList" v-bind:value="intent.value">{{intent.value}}</option></optgroup></select></ul></div>'
