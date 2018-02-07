@@ -14,7 +14,19 @@ var messages = {
 			createLabel : "Create Intent",
 			create : "Create",
 			savedAnswer : "Saved Answer",
-			answerPage : "Answer Page"
+			answerPage : "Answer Page",
+			image_url : "Image Url",
+			add : "Add",
+			subtitle : "Subtitle",
+			title : "Title",
+			url : "Website URL",
+			name : "Name",
+			text : "Text",
+			addButton : "Add Button",
+			save : "Save",
+			close : "Close",
+			removeButton : "Remove Button",
+			remove : "Remove"
 		}
 	},
 	tr: {
@@ -32,7 +44,19 @@ var messages = {
 			createLabel : "Intent Olu\u015Ftur",
 			create : "Olu\u015Ftur",
 			savedAnswer : "Kay\u0131tl\u0131 Cevap",
-			answerPage  : "Cevap Sayfas\u0131"
+			answerPage  : "Cevap Sayfas\u0131",
+			image_url : "Resim Url",
+			add : "Ekle",
+			subtitle : "Alt Ba\u015Fl\u0131k",
+			title : "Ba\u015Fl\u0131k",
+			url : "Websitesi URL",
+			name : "Isim",
+			text : "Yaz\u0131",
+			addButton : "Buton Ekle",
+			save : "Kaydet",
+			close : "Kapat",
+			removeButton : "Buton Kald\u0131r",
+			remove : "Kald\u0131r"
 		}
 	}
 

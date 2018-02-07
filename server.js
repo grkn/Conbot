@@ -8,7 +8,7 @@ var MongoQueries = require('./mongo/mongoQueries');
 var app = require('express')();
 var mongo = require('mongodb').MongoClient;
 var Client = require('node-rest-client').Client;
-
+var Carousel = require('./views/carousel');
 var client = new Client();
 
 
@@ -153,12 +153,13 @@ app.get('/hello',cors(), function (req, res) {
 app.post('/send/meaningful/sentence',cors(), function (req, res) {
 	var ref = firebase.database().ref("/answer");
   var set = { 'key' : req.body.intent, 'value' : req.body.message};
-  ref.child("/").equalTo(set).once("value", function(snapshot) {
-    var exists = snapshot.val();
-    console.log(exists);
-    if(!exists){
-      ref.push().set(set);
-    }
+  ref.child("/").once("value", function(snapshot) {
+    snapshot.forEach(function(userSnapshot) {
+        if(userSnapshot.val().key == set.key){
+            console.log(userSnapshot.val());
+            userSnapshot.ref().update({ value: req.body.message });
+        }
+    });
   });
   res.send({ resp : "OK"});
 });
@@ -273,6 +274,10 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
   });
 })
 
+app.post('/view/create/carousel',cors(),function(req,res){
+    var carousel = new Carousel(req.body.obj);
+    carousel.createListCarousel();
+});
 
 app.get('/chatbotdeploy/get',cors(), function (req, res) {
 	res.setHeader('content-type', 'application/json');

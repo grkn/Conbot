@@ -201,7 +201,94 @@ var container = Vue.component('container',{
 	}
 });
 
+Vue.component('popup',{
+	template : '<div id="myModal" class="modal fade" role="dialog">'
+	  +'<div class="modal-dialog">'
+	    +'<div class="modal-content">'
+	      +'<div class="modal-header">'
+	        +'<button type="button" class="close" data-dismiss="modal">&times;</button>'
+	        +'<h4 class="modal-title">Modal Header</h4>'
+	      +'</div>'
+	      +'<div class="modal-body">'
+	        +'<div><ul><select v-model="selectedIntent"><optgroup  v-for="intentList in list"><option v-for="intent in intentList" value="intent.value">{{intent.value}}</option></optgroup></select></ul></div>'
+					+'<div>'
+						+'<button style="float:right" class="btn btn-info" v-on:click="removeInputFields()">{{$t("message.remove")}}</button>'
+						+'<button style="float:right" class="btn btn-info" v-on:click="incrementInputFields()">{{$t("message.add")}}</button>'
+						+'<div v-for="car  in carousel">'
+							+'<table style="width:100%">'
+								+'<tr><td><label>{{$t("message.image_url")}}</label></td><td><input type="text" v-model="car.imgUrl"/></td></tr>'
+								+'<tr><td><label>{{$t("message.title")}}</label></td><td><input type="text" v-model="car.title"/></td></tr>'
+								+'<tr><td><label>{{$t("message.subtitle")}}</label></td><td><input type="text" v-model="car.subtitle"/></td></tr>'
+							+'</table>'
+							+'<button style="float:right" class="btn btn-info" v-on:click="removeButtons(car)">{{$t("message.removeButton")}}</button>'
+							+'<button style="float:right" class="btn btn-info" v-on:click="incrementButtons(car)">{{$t("message.addButton")}}</button>'
+							+'<div v-for="button in car.buttons">'
+								+'<table style="width:100%">'
+									+'<tr><td><label>{{$t("message.url")}}</label></td><td><input type="text" v-model="button.url"/></td></tr>'
+									+'<tr><td><label>{{$t("message.name")}}</label></td><td><input type="text" v-model="button.name"/></td></tr>'
+									+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="button.text"/></td></tr>'
+								+'</table>'
+								+'<hr />'
+							+'</div>'
+							+'<hr />'
+						+'</div>'
+					+'</div>'
+				+'</div>'
+	      +'<div class="modal-footer">'
+	        +'<button type="button" class="btn btn-default" data-dismiss="modal">{{$t("message.close")}}</button>'
+					+'<button type="button" class="btn btn-info" v-on:click="save" >{{$t("message.save")}}</button>'
+	      +'</div>'
+	    +'</div>'
+	+'  </div>'
+	+'</div>',
+	props : ['entityList'],
+	methods : {
+		incrementInputFields : function(){
+			if(this.carousel.length < 4){
+					this.carousel.push({buttons:[{}]});
+			}
+		},
+		incrementButtons : function(car){
+			if(car.buttons.length < 3){
+				car.buttons.push({});
+			}
+		},
+		removeButtons : function(car){
+			if(car.buttons.length >1){
+				car.buttons.splice(car.buttons.length -1 ,1)
+			}
+		},
+		removeInputFields : function(){
+			if(this.carousel.length > 1){
+					this.carousel.splice(this.carousel.length - 1 , 1);
+			}
+		},
+		save : function(){
+			Vue.http.post("/view/create/carousel",{obj : this.carousel},function(resp){
+				console.log(resp);
+			});
+		}
 
+	},
+	mounted : function(){
+		this.$nextTick(function () {
+			this.list = this.entityList;
+  	})
+	},
+	data :	function () {
+		return {list :[],selectedIntent:"",carousel:[{buttons:[{}]}]}
+	}
+});
+
+Vue.component('createCarousel',{
+	template : '<div><button v-on:click="loadPopup" type="button" class="btn btn-info" >Carousel</button><popup v-bind:entityList="entityList" ></popup></div>',
+	props : ['entityList'],
+	methods : {
+		loadPopup : function(){
+				$("#myModal").modal();
+		}
+	}
+});
 
 Vue.component('entity_answers',{
 	template : '<div class="col-sm-6 col-md-4">'
@@ -275,7 +362,7 @@ var answersContainer = Vue.component("answers",{
 							+'</span>'
 						+'</div>'
 				+'</div>'
-				+'<div class="content"><div style="width:20%;display:inline-block">'
+				+'<div class="content"><div><createCarousel v-bind:entityList="this.original"></createCarousel></div><div style="width:20%;display:inline-block">'
 				+'<ul v-for="intent in this.original"><li v-for="i in intent"><span style="cursor:pointer;" v-on:click="showOnlyThisItem(i)">{{i.value}}</span></li></ul></div><div style="width:80%;display:inline-block;vertical-align: top;" ><div ><label>{{$t("message.search")}}</label> <input type="text" v-model="searchText" v-on:keyup="search"/></div><br/><br/>'
 				+'<row_answers v-for="entityArray in this.intentList"  v-bind:array="entityArray" ></row_answers></div></div>'
 				+'<div class="footer"></div></div>',
