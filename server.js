@@ -156,10 +156,11 @@ app.post('/send/meaningful/sentence',cors(), function (req, res) {
   ref.child("/").once("value", function(snapshot) {
     snapshot.forEach(function(userSnapshot) {
         if(userSnapshot.val().key == set.key){
-            console.log(userSnapshot.val());
-            userSnapshot.ref().update({ value: req.body.message });
+          ref.child("/").child(userSnapshot.key).update(set);
+          return;
         }
     });
+    ref.child("/").push(set);
   });
   res.send({ resp : "OK"});
 });
