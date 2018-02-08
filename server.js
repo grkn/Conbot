@@ -358,43 +358,48 @@ app.post('/view/get/carousel',cors(),function(req,res){
 
 });
 
-// angular chatbot deploy get
-app.get('/chatbotdeploy/get',cors(), function (req, res) {
+// angular facebook deploy get
+app.get('/facebook/get', cors(), function (req, res) {
 	res.setHeader('content-type', 'application/json');
-	var ref = firebase.database().ref("/chatBotDeployment");
+	var ref = firebase.database().ref("/deploymentFacebook");
 	ref.once("value", function(snapshot) {
 		res.send(snapshot);
 	}, function (errorObject) {
-	  console.log("The read failed: " + errorObject.code);
+	  console.log("Firebase read failed: " + errorObject.code);
 	});
 });
 
-// angular chatbot deploy post
-app.post('/chatbotdeploy/post', cors(), function (req, res) {
-	console.log(req.body.chatbotDeployment);
-	var ref = firebase.database().ref("/chatBotDeployment").update(req.body.chatbotDeployment);
-	var facebookClass = new FaceBookClass(req.body.chatbotDeployment.pageId,req.body.chatbotDeployment.appId,
-  req.body.chatbotDeployment.appSecret,req.body.chatbotDeployment.accessToken,req.body.chatbotDeployment.verifyToken);
+// angular facebook deploy post
+app.post('/facebook/post', cors(), function (req, res) {
+	var ref = firebase.database().ref("/deploymentFacebook").update(req.body.facebookBot);
+	var facebookClass = new FaceBookClass(
+    req.body.facebookBot.pageId,
+    req.body.facebookBot.appId,
+    req.body.facebookBot.appSecret,
+    req.body.facebookBot.accessToken,
+    req.body.facebookBot.verifyToken);
 	facebookClass.botListen();
 	res.send({data : "OK"});
 });
 
+// angular skype deploy get
+app.get('/skype/get', cors(), function (req, res) {
+	var ref = firebase.database().ref("/deploymentSkype");
+	ref.once("value", function(snapshot) {
+		res.send(snapshot);
+	}, function (errorObject) {
+	  console.log("Firebase read failed: " + errorObject.code);
+	});
+});
+
+// angular skype deploy post
 app.post('/skype/post', cors(), function (req, res) {
 	console.log(req.body.skypeDeployment);
-	var ref = firebase.database().ref("/chatBotDeploymentSkype").update(req.body.skypeDeployment);
+	var ref = firebase.database().ref("/deploymentSkype").update(req.body.skypeDeployment);
 	//skype listen olacak burda sonra yaparım bir deneyelim
   var skypeClass = new SkypeClass(req.body.skypeDeployment.appId,req.body.skypeDeployment.appPassword);
   skypeClass.botPrepare();
 	res.send({data : "OK"});
-});
-
-app.get('/skype/get',cors(), function (req, res) {
-	var ref = firebase.database().ref("/chatBotDeploymentSkype");
-	ref.once("value", function(snapshot) {
-		res.send(snapshot);
-	}, function (errorObject) {
-	  console.log("The read failed: " + errorObject.code);
-	});
 });
 
 // angular project info deploy get
@@ -404,7 +409,7 @@ app.get('/projectinfo/get',cors(), function (req, res) {
 	ref.once("value", function(snapshot) {
 		res.send(snapshot);
 	}, function (errorObject) {
-	  console.log("The read failed: " + errorObject.code);
+	  console.log("Firebase read failed: " + errorObject.code);
 	});
 });
 
