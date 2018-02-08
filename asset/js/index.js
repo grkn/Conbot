@@ -209,7 +209,7 @@ Vue.component('popup',{
 	        +'<h4 class="modal-title">Modal Header</h4>'
 	      +'</div>'
 	      +'<div class="modal-body">'
-	        +'<div><ul><select v-model="selectedIntent"><optgroup  v-for="intentList in list"><option v-for="intent in intentList" v-bind:value="intent.value">{{intent.value}}</option></optgroup></select></ul></div>'
+	        +'<div><ul><select v-model="selectedIntent" v-on:change="selectedIntentFunc"><optgroup  v-for="intentList in list"><option v-for="intent in intentList" v-bind:value="intent.value">{{intent.value}}</option></optgroup></select></ul></div>'
 					+'<div>'
 						+'<button style="float:right" class="btn btn-info" v-on:click="removeInputFields()">{{$t("message.remove")}}</button>'
 						+'<button style="float:right" class="btn btn-info" v-on:click="incrementInputFields()">{{$t("message.add")}}</button>'
@@ -263,9 +263,28 @@ Vue.component('popup',{
 			}
 		},
 		save : function(){
-			console.log(this.selectedIntent);
 			Vue.http.post("/view/create/carousel",{obj : this.carousel,intent : this.selectedIntent},function(resp){
 				console.log(resp);
+			});
+		},
+
+		selectedIntentFunc : function(){
+			var carouselTemp = this.carousel;
+			Vue.http.post("/view/get/carousel",{intent : this.selectedIntent},function(resp){
+				console.log(resp);
+				if(resp.type && resp.type == 'carousel'){
+					while(0 < carouselTemp.length){
+						carouselTemp.splice(0,1);
+					}
+					for(var i = 0 ; i < resp.value.length;i++){
+						carouselTemp.push(resp.value[i]);
+					}
+				}else{
+					while(0 < carouselTemp.length){
+						carouselTemp.splice(0,1);
+					}
+					carouselTemp.push({buttons:[{}]});
+				}
 			});
 		}
 

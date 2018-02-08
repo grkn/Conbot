@@ -152,7 +152,7 @@ app.get('/hello',cors(), function (req, res) {
 
 app.post('/send/meaningful/sentence',cors(), function (req, res) {
 	var ref = firebase.database().ref("/answer");
-  var set = { 'key' : req.body.intent, 'value' : req.body.message};
+  var set = { 'key' : req.body.intent, 'value' : req.body.message , 'type' : 'text'};
   ref.child("/").once("value", function(snapshot) {
     var found = false;
     snapshot.forEach(function(userSnapshot) {
@@ -314,7 +314,6 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
 
 app.post('/view/create/carousel',cors(),function(req,res){
     var carousel = new Carousel(req.body.obj);
-    res.send(carousel.createListCarousel());
     var ref = firebase.database().ref("/answer");
     var set = { 'key' : req.body.intent, 'value' : req.body.obj , 'type' : 'carousel'};
     ref.child("/").once("value", function(snapshot) {
@@ -332,6 +331,24 @@ app.post('/view/create/carousel',cors(),function(req,res){
     res.send({ resp : "OK"});
 
 });
+
+app.post('/view/get/carousel',cors(),function(req,res){
+    var ref = firebase.database().ref("/answer");
+    ref.child("/").once("value", function(snapshot) {
+      var found = false;
+      snapshot.forEach(function(userSnapshot) {
+          if(userSnapshot.val().key == req.body.intent){
+            res.send(userSnapshot.val())
+            found = true;
+          }
+      });
+      if(!found){
+        res.send({resp : "NOT_FOUND"});
+      }
+    });
+
+});
+
 
 app.get('/chatbotdeploy/get',cors(), function (req, res) {
 	res.setHeader('content-type', 'application/json');
