@@ -371,13 +371,13 @@ app.get('/facebook/get', cors(), function (req, res) {
 
 // angular facebook deploy post
 app.post('/facebook/post', cors(), function (req, res) {
-	var ref = firebase.database().ref("/deploymentFacebook").update(req.body.facebookBot);
+	var ref = firebase.database().ref("/deploymentFacebook").update(req.body.facebookDeployment);
 	var facebookClass = new FaceBookClass(
-    req.body.facebookBot.pageId,
-    req.body.facebookBot.appId,
-    req.body.facebookBot.appSecret,
-    req.body.facebookBot.accessToken,
-    req.body.facebookBot.verifyToken);
+    req.body.facebookDeployment.pageId,
+    req.body.facebookDeployment.appId,
+    req.body.facebookDeployment.appSecret,
+    req.body.facebookDeployment.accessToken,
+    req.body.facebookDeployment.verifyToken);
 	facebookClass.botListen();
 	res.send({data : "OK"});
 });
@@ -397,7 +397,9 @@ app.post('/skype/post', cors(), function (req, res) {
 	console.log(req.body.skypeDeployment);
 	var ref = firebase.database().ref("/deploymentSkype").update(req.body.skypeDeployment);
 	//skype listen olacak burda sonra yaparım bir deneyelim
-  var skypeClass = new SkypeClass(req.body.skypeDeployment.appId,req.body.skypeDeployment.appPassword);
+  var skypeClass = new SkypeClass(
+    req.body.skypeDeployment.appId,
+    req.body.skypeDeployment.appPassword);
   skypeClass.botPrepare();
 	res.send({data : "OK"});
 });
