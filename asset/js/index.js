@@ -314,7 +314,7 @@ Vue.component('createCarousel',{
 	}
 });
 
-// Answers cevap ekleme
+// Answers cevap ekleme 
 Vue.component('answers',{
 	template :'<div class="col-sm-6 col-md-4">'
 							+'<div class="thumbnail">'
