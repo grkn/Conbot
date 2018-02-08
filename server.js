@@ -84,6 +84,12 @@ app.post("/mongo/findByQuery/:collectionName",function(req,res){
   });
 });
 
+app.get("/mongo/delete/:collectionName",function(req,res){
+  instanceMongoQueries.deleteCollection(req.params.collectionName,function(result){
+    res.send(result);
+  });
+});
+
 // wit e intent olusturyor
 app.delete("/delete/intent",cors(),function(req,res){
   var wit = {

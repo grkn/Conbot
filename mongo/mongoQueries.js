@@ -32,6 +32,11 @@ var mongoQueries = class MongoQueries {
       callback(res);
     });
   }
+
+  deleteCollection(collectionName,callback){
+      this.db.db("conbot").collection(collectionName).remove();
+      callback({resp:"OK"});
+  }
 }
 
 module.exports = mongoQueries;
