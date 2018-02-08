@@ -4,6 +4,8 @@ var bodyParser = require('body-parser');
 var MessengerPlatform = require('facebook-bot-messenger');
 var FaceBookClass = require('./facebook');
 var MongoQueries = require('./mongo/mongoQueries');
+var SkypeClass = require('./skype/skypeClass');
+
 var app = require('express')();
 var mongo = require('mongodb').MongoClient;
 var Client = require('node-rest-client').Client;
@@ -375,6 +377,24 @@ app.post('/chatbotdeploy/post', cors(), function (req, res) {
   req.body.chatbotDeployment.appSecret,req.body.chatbotDeployment.accessToken,req.body.chatbotDeployment.verifyToken);
 	facebookClass.botListen();
 	res.send({data : "OK"});
+});
+
+app.post('/skype/post', cors(), function (req, res) {
+	console.log(req.body.skypeDeployment);
+	var ref = firebase.database().ref("/chatBotDeploymentSkype").update(req.body.skypeDeployment);
+	//skype listen olacak burda sonra yaparım bir deneyelim
+  var skypeClass = new SkypeClass(req.body.skypeDeployment.appId,req.body.skypeDeployment.appPassword);
+  skypeClass.botPrepare();
+	res.send({data : "OK"});
+});
+
+app.get('/skype/get',cors(), function (req, res) {
+	var ref = firebase.database().ref("/chatBotDeploymentSkype");
+	ref.once("value", function(snapshot) {
+		res.send(snapshot);
+	}, function (errorObject) {
+	  console.log("The read failed: " + errorObject.code);
+	});
 });
 
 // angular project info deploy get
