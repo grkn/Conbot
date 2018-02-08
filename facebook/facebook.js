@@ -30,7 +30,6 @@ var facebookclass= class FacebookBotClass {
 									"locale":"en_US",
 									"text":"Timeless apparel for the masses."
 								}];
-
 		this.bot.on('message', (payload, reply) => {
 
 
@@ -60,7 +59,7 @@ var facebookclass= class FacebookBotClass {
 				});
 			});*/
 
-			/*var wit = {
+			var wit = {
 				data : {
 					parameters: {}
 				},
@@ -73,7 +72,7 @@ var facebookclass= class FacebookBotClass {
 			client.get("https://api.wit.ai/message?q="+encodeURIComponent(payload.message.text),wit,function(response){
 				console.log(response.entities.intent[0]);
 			});
-*/
+
 
 /*
 		let loc = {title : 'Please send your location'};
