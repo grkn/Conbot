@@ -85,9 +85,9 @@ app.post("/mongo/findByQuery/:collectionName",function(req,res){
 });
 
 app.get("/mongo/delete/:collectionName",function(req,res){
-  instanceMongoQueries.deleteCollection(req.params.collectionName,function(result){
-    res.send(result);
-  });
+  console.log(req.params.collectionName);
+  instanceMongoQueries.deleteCollection(req.params.collectionName);
+  res.send({resp : "OK"});
 });
 
 // wit e intent olusturyor
@@ -344,7 +344,7 @@ app.post('/view/get/carousel',cors(),function(req,res){
 
 });
 
-
+// angular chatbot deploy get
 app.get('/chatbotdeploy/get',cors(), function (req, res) {
 	res.setHeader('content-type', 'application/json');
 	var ref = firebase.database().ref("/chatBotDeployment");
