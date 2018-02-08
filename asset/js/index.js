@@ -348,7 +348,7 @@ Vue.component('entity_answers',{
 			var sentence = this.sentence
 			Vue.http.get("/get/meaningful/sentence",{intent : this.value}).then(function(resp){
 					if(resp.data.resp != "NOT_FOUND"){
-						if(resp.data.type){
+						if(resp.data.type && resp.data.type != 'text'){
 							sentence.default = resp.data.type;
 						}else{
 							sentence.default = resp.data.resp;
