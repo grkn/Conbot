@@ -1,4 +1,3 @@
-var express = require('express');
 var cors = require('cors');
 var firebase = require('firebase');
 var bodyParser = require('body-parser');
@@ -24,7 +23,6 @@ mongo.connect(url, function(err, db) {
   if (err) throw err;
   instanceMongoQueries = new MongoQueries(db);
 });
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -54,8 +52,8 @@ app.get('/asset/js/index.js',function(req,res){
 });
 
 
-app.get("/mongo/createCollection/:name",function(req,res){
-  instanceMongoQueries.createCollection(req.params.name,function(resp,err){
+app.get("/mongo/createCollection/:collectionName",function(req,res){
+  instanceMongoQueries.createCollection(req.params.collectionName,function(resp,err){
     res.send({resp : 'OK'});
   });
 });
@@ -86,6 +84,39 @@ app.post("/mongo/findByQuery/:collectionName",function(req,res){
   });
 });
 
+// wit e intent olusturyor
+app.delete("/delete/intent",cors(),function(req,res){
+  var wit = {
+    data : {
+    },
+    headers : {
+      "Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
+      "Content-Type": "application/json"
+    }
+  }
+  client.delete("https://api.wit.ai/entities/intent/values/"+encodeURIComponent(req.body.value),wit,function(response){
+    res.send(response);
+  });
+});
+
+// wit den intent siliyor
+app.post("/create/intent",cors(),function(req,res){
+  var wit = {
+    data : {
+      "value" : req.body.value,
+      "expressions":[]
+    },
+    headers : {
+      "Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
+      "Content-Type": "application/json"
+    }
+  }
+  client.post("https://api.wit.ai/entities/intent/values",wit,function(response){
+    res.send(response);
+  });
+
+});
+
 // wit den intent i getiriyor
 app.get("/get/witai/entities",function(req,res){
   var wit = {
@@ -102,7 +133,7 @@ app.get("/get/witai/entities",function(req,res){
   });
 })
 
-// wit intent e cümle kaydediyor
+// wit intent ine cümle kaydediyor
 app.post("/post/intent/expressions",function(req,res){
   console.log(req.body.expressions);
   var wit = {
@@ -120,8 +151,7 @@ app.post("/post/intent/expressions",function(req,res){
   });
 });
 
-
-// Vue cümle silmek için
+// wit intent inden cümle siliyor
 app.delete("/delete/intent/expressions",function(req,res){
   console.log(req.body.expression);
 	var wit = {
@@ -149,7 +179,7 @@ app.get('/hello',cors(), function (req, res) {
 	});
 });
 
-
+// intent icin cevap ekleme
 app.post('/send/meaningful/sentence',cors(), function (req, res) {
 	var ref = firebase.database().ref("/answer");
   var set = { 'key' : req.body.intent, 'value' : req.body.message , 'type' : 'text'};
@@ -168,7 +198,7 @@ app.post('/send/meaningful/sentence',cors(), function (req, res) {
   res.send({ resp : "OK"});
 });
 
-
+// intent icin cevap getirme
 app.get('/get/meaningful/sentence',cors(), function (req, res) {
   var ref = firebase.database().ref("/answer");
   ref.once("value", function(snapshot) {
@@ -179,11 +209,11 @@ app.get('/get/meaningful/sentence',cors(), function (req, res) {
           return;
         }
       }
-        res.send({resp : "NOT_FOUND"});
+      res.send({resp : "NOT_FOUND"});
   });
 });
 
-
+// intent icin cevap silme
 app.delete('/delete/meaningful/sentence',cors(), function (req, res) {
   var ref = firebase.database().ref("/answer");
   ref.once("value", function(snapshot) {
@@ -196,40 +226,6 @@ app.delete('/delete/meaningful/sentence',cors(), function (req, res) {
       });
   });
 });
-
-app.delete("/delete/intent",cors(),function(req,res){
-  var wit = {
-    data : {
-    },
-    headers : {
-      "Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
-      "Content-Type": "application/json"
-    }
-  }
-  client.delete("https://api.wit.ai/entities/intent/values/"+encodeURIComponent(req.body.value),wit,function(response){
-    res.send(response);
-  });
-
-});
-
-
-app.post("/create/intent",cors(),function(req,res){
-  var wit = {
-    data : {
-      "value" : req.body.value,
-      "expressions":[]
-    },
-    headers : {
-      "Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
-      "Content-Type": "application/json"
-    }
-  }
-  client.post("https://api.wit.ai/entities/intent/values",wit,function(response){
-    res.send(response);
-  });
-
-});
-
 
 //** WEB API for dialogflow**//
 app.get('/api/getMessage/dialogFlow',cors(),function(req,res){
@@ -265,7 +261,6 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
   client.get("https://api.wit.ai/message?q="+encodeURIComponent(req.body.obj.message.text),wit,function(response){
     console.log(response.entities);
     if(response.entities && response.entities.intent && response.entities.intent.length > 0){
-
       console.log(response.entities.intent);
       var max = -1;
       var maxValue="";
@@ -275,23 +270,17 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
           max = response.entities.intent[i].confidence;
         }
       }
-
       var ref = firebase.database().ref("/answer");
       ref.once("value", function(snapshot) {
-
           snapshot.forEach(function(childSnapshot) {
-
             ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
-
               if(itemSnapshot.val().key == maxValue){
-
                 if(req.body.obj){
                   req.body.obj.created_date = new Date();
                   instanceMongoQueries.insertOne(req.params.collectionName,req.body.obj,function(resp,obj){
                       res.send({text : itemSnapshot.val().value,type : itemSnapshot.val().type, intent : itemSnapshot.val().key});
                   });
                   var obj = {"transaction":req.body.obj.transaction,"message":{text : itemSnapshot.val().value ,type : itemSnapshot.val().type, intent : itemSnapshot.val().key},"user_id":"BOT","created_date": new Date()};
-
                   instanceMongoQueries.insertOne(req.params.collectionName,obj,function(resp,obj){
 
                   });
@@ -312,6 +301,7 @@ app.post('/api/getMessage/witai/:collectionName',cors(),function(req,res){
   });
 })
 
+
 app.post('/view/create/carousel',cors(),function(req,res){
     var carousel = new Carousel(req.body.obj);
     var ref = firebase.database().ref("/answer");
@@ -329,7 +319,6 @@ app.post('/view/create/carousel',cors(),function(req,res){
       }
     });
     res.send({ resp : "OK"});
-
 });
 
 app.post('/view/get/carousel',cors(),function(req,res){
@@ -359,6 +348,8 @@ app.get('/chatbotdeploy/get',cors(), function (req, res) {
 	  console.log("The read failed: " + errorObject.code);
 	});
 });
+
+// angular chatbot deploy post
 app.post('/chatbotdeploy/post', cors(), function (req, res) {
 	console.log(req.body.chatbotDeployment);
 	var ref = firebase.database().ref("/chatBotDeployment").update(req.body.chatbotDeployment);
@@ -368,7 +359,7 @@ app.post('/chatbotdeploy/post', cors(), function (req, res) {
 	res.send({data : "OK"});
 });
 
-
+// angular project info deploy get
 app.get('/projectinfo/get',cors(), function (req, res) {
 	res.setHeader('content-type', 'application/json');
 	var ref = firebase.database().ref("/projectInfo");
@@ -378,6 +369,8 @@ app.get('/projectinfo/get',cors(), function (req, res) {
 	  console.log("The read failed: " + errorObject.code);
 	});
 });
+
+// angular project info deploy post
 app.post('/projectinfo/post', cors(), function (req, res) {
 	console.log(req.body.projectInfo);
 	var ref = firebase.database().ref("/projectInfo").update(req.body.projectInfo);
