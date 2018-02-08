@@ -101,8 +101,20 @@ app.delete("/delete/intent",cors(),function(req,res){
     }
   }
   client.delete("https://api.wit.ai/entities/intent/values/"+encodeURIComponent(req.body.value),wit,function(response){
-    res.send(response);
+    var ref = firebase.database().ref("/answer");
+    ref.once("value", function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+          ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
+            if(itemSnapshot.val().key == req.body.value){
+              ref.child('/').child(childSnapshot.key).remove();
+              res.send(response);
+            }
+          });
+        });
+    });
   });
+
+
 });
 
 // wit den intent siliyor
