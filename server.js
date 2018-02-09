@@ -1,13 +1,12 @@
+var app = require('express')();
 var cors = require('cors');
 var firebase = require('firebase');
+var mongo = require('mongodb').MongoClient;
 var bodyParser = require('body-parser');
-var MessengerPlatform = require('facebook-bot-messenger');
-var FaceBookClass = require('./facebook');
+// var MessengerPlatform = require('facebook-bot-messenger');
+var FaceBookClass = require('./facebook/facebook');
 var MongoQueries = require('./mongo/mongoQueries');
 var SkypeClass = require('./skype/skypeClass');
-
-var app = require('express')();
-var mongo = require('mongodb').MongoClient;
 var Client = require('node-rest-client').Client;
 var Carousel = require('./views/carousel');
 var client = new Client();
@@ -188,7 +187,6 @@ app.delete("/delete/intent/expressions",function(req,res){
 	});
 });
 
-
 // http://localhost:8000/hello yazdığında fireabase database in tamamını basıyor ekrana
 app.get('/hello',cors(), function (req, res) {
 	var ref = firebase.database().ref("/");
@@ -355,7 +353,6 @@ app.post('/view/get/carousel',cors(),function(req,res){
         res.send({resp : "NOT_FOUND"});
       }
     });
-
 });
 
 // angular facebook deploy get
@@ -394,7 +391,6 @@ app.get('/skype/get', cors(), function (req, res) {
 
 // angular skype deploy post
 app.post('/skype/post', cors(), function (req, res) {
-	console.log(req.body.skypeDeployment);
 	var ref = firebase.database().ref("/deploymentSkype").update(req.body.skypeDeployment);
 	//skype listen olacak burda sonra yaparım bir deneyelim
   var skypeClass = new SkypeClass(

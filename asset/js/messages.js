@@ -56,7 +56,11 @@ var messages = {
 			save : "Kaydet",
 			close : "Kapat",
 			removeButton : "Buton Kald\u0131r",
-			remove : "Kald\u0131r"
+			remove : "Kald\u0131r",
+			addCarousel: "Carousel Ekle",
+			removeCarousel: "Carousel Kad\u0131r",
+			addQuickReply: "Quick Reply Ekle",
+			removeQuickReply: "Quick Reply Kad\u0131r"
 		}
 	}
 
