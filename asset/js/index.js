@@ -551,6 +551,231 @@ Vue.component('createListTemplate',{
 	}
 });
 
+
+Vue.component('generic_buttons_popup',{
+	template :'<div id="myModalGenericButtons" class="modal fade" role="dialog">'
+							+'<div class="modal-dialog">'
+						    +'<div class="modal-content">'
+						      +'<div class="modal-header">'
+						        +'<button type="button" class="close" data-dismiss="modal">&times;</button>'
+						        +'<h4 class="modal-title">Carousel</h4>'
+						      +'</div>'
+						      +'<div class="modal-body">'
+						        +'<div><span>{{$t("message.selectIntent")}}</span>&nbsp;&nbsp;'
+												+'<select v-model="selectedIntent" v-on:change="selectedIntentFunc"><optgroup v-for="intentList in list">'
+													+'<option v-for="intent in intentList" v-bind:value="intent.value">{{intent.value}}</option></optgroup>'
+												+'</select>'
+										+'</div>'
+										+'<br/>'
+										+'<div>'
+											+'<div v-for="car in genericButtons">'
+												+'<table style="width:100%">'
+													+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="car.text"/></td></tr>'
+												+'</table>'
+												+'<button style="float:right" class="btn btn-info" v-on:click="removeButtons(car)">{{$t("message.removeButton")}}</button>'
+												+'<button style="float:right" class="btn btn-info" v-on:click="incrementButtons(car)">{{$t("message.addButton")}}</button>'
+												+'<div v-for="button in car.buttons">'
+													+'<table style="width:100%">'
+														+'<tr><td><label>{{$t("message.url")}}</label></td><td><input type="text" v-model="button.url"/></td></tr>'
+														+'<tr><td><label>{{$t("message.name")}}</label></td><td><input type="text" v-model="button.name"/></td></tr>'
+														+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="button.text"/></td></tr>'
+													+'</table>'
+													+'<hr/>'
+												+'</div><!--button in-->'
+												+'<hr/>'
+											+'</div><!--car in-->'
+										+'</div><!-- -->'
+									+'</div><!--modal-body-->'
+						      +'<div class="modal-footer">'
+						        +'<button type="button" class="btn btn-default" data-dismiss="modal">{{$t("message.close")}}</button>'
+										+'<button type="button" class="btn btn-info" v-on:click="save">{{$t("message.save")}}</button>'
+						      +'</div>'
+						    +'</div><!--modal-content-->'
+						+'</div><!--modal-dialog-->'
+					+'</div><!--myModal-->',
+	props : ['entityList'],
+	methods : {
+		incrementInputFields : function(){
+			if(this.genericButtons.length < 4){
+					this.genericButtons.push({buttons:[{}]});
+			}
+		},
+		removeInputFields : function(){
+			if(this.genericButtons.length > 1){
+				this.genericButtons.splice(this.genericButtons.length - 1 , 1);
+			}
+		},
+		incrementButtons : function(car){
+			if(car.buttons.length < 3){
+				car.buttons.push({});
+			}
+		},
+		removeButtons : function(car){
+			if(car.buttons.length >1){
+				car.buttons.splice(car.buttons.length -1 ,1)
+			}
+		},
+		save : function(){
+			Vue.http.post("/view/create/genericButtons", {obj : this.genericButtons,intent : this.selectedIntent},function(resp){
+				console.log(resp);
+			});
+		},
+		selectedIntentFunc : function(){
+			var genericButtons = this.genericButtons;
+			Vue.http.post("/view/get/genericButtons", {intent : this.selectedIntent},function(resp){
+				console.log(resp);
+				if(resp.type && resp.type == 'genericButtons'){
+					while(0 < genericButtons.length){
+						genericButtons.splice(0,1);
+					}
+					for(var i = 0 ; i < resp.value.length;i++){
+						genericButtons.push(resp.value[i]);
+					}
+				}else{
+					while(0 < genericButtons.length){
+						genericButtons.splice(0,1);
+					}
+					genericButtons.push({buttons:[{}]});
+				}
+			});
+		}
+	},
+	mounted : function(){
+		this.$nextTick(function () {
+			this.list = this.entityList;
+  	})
+	},
+	data :	function () {
+		return {list :[], selectedIntent:"", genericButtons:[{buttons:[{}]}]}
+	}
+});
+
+Vue.component('attachment_popup',{
+	template :'<div id="myModalAttachment" class="modal fade" role="dialog">'
+							+'<div class="modal-dialog">'
+						    +'<div class="modal-content">'
+						      +'<div class="modal-header">'
+						        +'<button type="button" class="close" data-dismiss="modal">&times;</button>'
+						        +'<h4 class="modal-title">Carousel</h4>'
+						      +'</div>'
+						      +'<div class="modal-body">'
+						        +'<div><span>{{$t("message.selectIntent")}}</span>&nbsp;&nbsp;'
+												+'<select v-model="selectedIntent" v-on:change="selectedIntentFunc"><optgroup v-for="intentList in list">'
+													+'<option v-for="intent in intentList" v-bind:value="intent.value">{{intent.value}}</option></optgroup>'
+												+'</select>'
+										+'</div>'
+										+'<br/>'
+										+'<div>'
+											+'<div v-for="car in genericButtons">'
+												+'<table style="width:100%">'
+													+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="car.text"/></td></tr>'
+												+'</table>'
+												+'<button style="float:right" class="btn btn-info" v-on:click="removeButtons(car)">{{$t("message.removeAttachment")}}</button>'
+												+'<button style="float:right" class="btn btn-info" v-on:click="incrementButtons(car)">{{$t("message.addAttachment")}}</button>'
+												+'<div v-for="button in car.buttons">'
+													+'<table style="width:100%">'
+														+'<tr><td><label>{{$t("message.url")}}</label></td><td><input type="text" v-model="button.url"/></td></tr>'
+														+'<tr><td><label>{{$t("message.name")}}</label></td><td><input type="text" v-model="button.name"/></td></tr>'
+														+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="button.text"/></td></tr>'
+													+'</table>'
+													+'<hr/>'
+												+'</div><!--button in-->'
+												+'<hr/>'
+											+'</div><!--car in-->'
+										+'</div><!-- -->'
+									+'</div><!--modal-body-->'
+						      +'<div class="modal-footer">'
+						        +'<button type="button" class="btn btn-default" data-dismiss="modal">{{$t("message.close")}}</button>'
+										+'<button type="button" class="btn btn-info" v-on:click="save">{{$t("message.save")}}</button>'
+						      +'</div>'
+						    +'</div><!--modal-content-->'
+						+'</div><!--modal-dialog-->'
+					+'</div><!--myModal-->',
+	props : ['entityList'],
+	methods : {
+		incrementInputFields : function(){
+			if(this.genericButtons.length < 4){
+					this.genericButtons.push({buttons:[{}]});
+			}
+		},
+		removeInputFields : function(){
+			if(this.genericButtons.length > 1){
+				this.genericButtons.splice(this.genericButtons.length - 1 , 1);
+			}
+		},
+		incrementButtons : function(car){
+			if(car.buttons.length < 3){
+				car.buttons.push({});
+			}
+		},
+		removeButtons : function(car){
+			if(car.buttons.length >1){
+				car.buttons.splice(car.buttons.length -1 ,1)
+			}
+		},
+		save : function(){
+			Vue.http.post("/view/create/attachment", {obj : this.genericButtons,intent : this.selectedIntent},function(resp){
+				console.log(resp);
+			});
+		},
+		selectedIntentFunc : function(){
+			var genericButtons = this.genericButtons;
+			Vue.http.post("/view/get/attachment", {intent : this.selectedIntent},function(resp){
+				console.log(resp);
+				if(resp.type && resp.type == 'attachment'){
+					while(0 < genericButtons.length){
+						genericButtons.splice(0,1);
+					}
+					for(var i = 0 ; i < resp.value.length;i++){
+						genericButtons.push(resp.value[i]);
+					}
+				}else{
+					while(0 < genericButtons.length){
+						genericButtons.splice(0,1);
+					}
+					genericButtons.push({buttons:[{}]});
+				}
+			});
+		}
+	},
+	mounted : function(){
+		this.$nextTick(function () {
+			this.list = this.entityList;
+  	})
+	},
+	data :	function () {
+		return {list :[], selectedIntent:"", genericButtons:[{buttons:[{}]}]}
+	}
+});
+
+Vue.component('createGenericButtons',{
+	template :'<div style="display:inline-block; padding-right:1%;">'
+							+'<button v-on:click="loadPopup" type="button" class="btn btn-info">Generic Buttons</button>'
+							+'<generic_buttons_popup v-bind:entityList="entityList"></generic_buttons_popup>'
+						+'</div>',
+	props : ['entityList'],
+	methods : {
+		loadPopup : function(){
+				$("#myModalGenericButtons").modal();
+		}
+	}
+});
+
+Vue.component('createAttachment',{
+	template :'<div style="display:inline-block; padding-right:1%;">'
+							+'<button v-on:click="loadPopup" type="button" class="btn btn-info">Attachment</button>'
+							+'<attachment_popup v-bind:entityList="entityList"></attachment_popup>'
+						+'</div>',
+	props : ['entityList'],
+	methods : {
+		loadPopup : function(){
+				$("#myModalAttachment").modal();
+		}
+	}
+});
+
+
+
 // Answers cevap ekleme
 Vue.component('answers',{
 	template :'<div class="col-sm-6 col-md-4">'
@@ -636,6 +861,8 @@ var answersContainer = Vue.component("answersContainer",{
 								+'<createCarousel v-bind:entityList="this.original"></createCarousel>'
 								+'<createQuickReply v-bind:entityList="this.original"></createQuickReply>'
 								+'<createListTemplate v-bind:entityList="this.original"></createListTemplate>'
+								+'<createGenericButtons v-bind:entityList="this.original"></createGenericButtons>'
+								+'<createAttachment v-bind:entityList="this.original"></createAttachment>'
 							+'</div>'
 							+'<div class="col-md-2">'
 								+'<ul v-for="intent in this.original"><li v-for="i in intent"><span style="cursor:pointer;" v-on:click="showOnlyThisItem(i)">{{i.value}}</span></li></ul>'

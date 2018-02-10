@@ -394,6 +394,58 @@ app.post('/view/create/listTemplate',cors(),function(req,res){
     res.send({ resp : "OK"});
 });
 
+app.post('/view/create/genericButtons',cors(),function(req,res){
+    var ref = firebase.database().ref("/answer");
+    var set = { 'key' : req.body.intent, 'value' : req.body.obj , 'type' : 'genericButtons'};
+    ref.child("/").once("value", function(snapshot) {
+      var found = false;
+      snapshot.forEach(function(userSnapshot) {
+          if(userSnapshot.val().key == set.key){
+            ref.child("/").child(userSnapshot.key).update(set);
+            found = true;
+          }
+      });
+      if(!found){
+        ref.child("/").push(set)
+      }
+    });
+    res.send({ resp : "OK"});
+});
+
+app.post('/view/create/attachment',cors(),function(req,res){
+    var ref = firebase.database().ref("/answer");
+    var set = { 'key' : req.body.intent, 'value' : req.body.obj , 'type' : 'attachment'};
+    ref.child("/").once("value", function(snapshot) {
+      var found = false;
+      snapshot.forEach(function(userSnapshot) {
+          if(userSnapshot.val().key == set.key){
+            ref.child("/").child(userSnapshot.key).update(set);
+            found = true;
+          }
+      });
+      if(!found){
+        ref.child("/").push(set)
+      }
+    });
+    res.send({ resp : "OK"});
+});
+
+app.post('/view/get/attachment',cors(),function(req,res){
+    var ref = firebase.database().ref("/answer");
+    ref.child("/").once("value", function(snapshot) {
+      var found = false;
+      snapshot.forEach(function(userSnapshot) {
+          if(userSnapshot.val().key == req.body.intent){
+            res.send(userSnapshot.val())
+            found = true;
+          }
+      });
+      if(!found){
+        res.send({resp : "NOT_FOUND"});
+      }
+    });
+});
+
 app.post('/view/get/listTemplate',cors(),function(req,res){
     var ref = firebase.database().ref("/answer");
     ref.child("/").once("value", function(snapshot) {
@@ -410,7 +462,21 @@ app.post('/view/get/listTemplate',cors(),function(req,res){
     });
 });
 
-
+app.post('/view/get/genericButtons',cors(),function(req,res){
+    var ref = firebase.database().ref("/answer");
+    ref.child("/").once("value", function(snapshot) {
+      var found = false;
+      snapshot.forEach(function(userSnapshot) {
+          if(userSnapshot.val().key == req.body.intent){
+            res.send(userSnapshot.val())
+            found = true;
+          }
+      });
+      if(!found){
+        res.send({resp : "NOT_FOUND"});
+      }
+    });
+});
 
 app.post('/view/get/quickReply',cors(),function(req,res){
     var ref = firebase.database().ref("/answer");

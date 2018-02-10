@@ -36,7 +36,9 @@ var messages = {
 			addListItem : "Add List Item",
 			removeListItem : "Remove List Item",
 			viewMoreButtonUrl : "View More Url",
-			viewMoreButtonName : "View More Name"
+			viewMoreButtonName : "View More Name",
+			addAttachment : "Add Attachment",
+			removeAttachment : "Remove Attachment"
 		}
 	},
 	tr: {
@@ -76,7 +78,9 @@ var messages = {
 			addListItem : "List Item Ekle",
 			removeListItem : "List Item Sil",
 			viewMoreButtonUrl : "Daha Fazla I\u00E7in Url",
-			viewMoreButtonName : "Daha Fazla I\u00E7in Isim"
+			viewMoreButtonName : "Daha Fazla I\u00E7in Isim",
+			addAttachment : "Dosya Ekle",
+			removeAttachment : "Dosya \u00C7\u0131kar"
 
 		}
 	}

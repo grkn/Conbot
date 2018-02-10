@@ -148,7 +148,31 @@
 						+'</div>'
 					+'</div>';
 					return listTemplate;
+				},
+				genericButtons : function(obj){
+					var genericButtons = '<div class="generic_button">'
+						  +'<ul >'
+							+	'<li>'
+									+'<div class="text-title-subtitle">'
+										+'<div class="text"><span>'+obj.text[0].text+'</span></div>';
+										var buttons = "";
+										for(var i = 0 ; i < obj.text[0].buttons.length; i++){
+											if(obj.text[0].buttons[i].text && obj.text[0].buttons[i].url){
+												buttons += '<a target="_blank" href="'+obj.text[0].buttons[i].url+'" onclick="buttonWrite(\''+obj.text[0].buttons[i].text+'\')" style="width:200px" type="button" class="btn btn-info">'+obj.text[0].buttons[i].name+'</a>';
+											}else if(!obj.text[0].buttons[i].text && obj.text[0].buttons[i].url){
+												buttons += '<a target="_blank" href="'+obj.text[0].buttons[i].url+'" style="width:200px" type="button" class="btn btn-info">'+obj.text[0].buttons[i].name+'</a>';
+											}else if(obj.text[0].buttons[i].text && !obj.text[0].buttons[i].url){
+												buttons += '<a onclick="buttonWrite(\''+obj.text[0].buttons[i].text+'\')" style="width:200px" type="button" class="btn btn-info">'+obj.text[0].buttons[i].name+'</a>';
+											}
+										}
+							genericButtons += buttons;
+							genericButtons += '</div>'
+								+'</li>'
+						 +' </ul>'
+						+'</div>'
+					return genericButtons;
 				}
+
 			}
 
 			//load function for messages from Mongo db
@@ -175,6 +199,9 @@
 								}
 								else if(msg[i].message.type && msg[i].message.type=="listTemplate"){
 									$('#container .main-ul').append('<li class="bot">'+views.listTemplate(msg[i].message)+'</li>');
+								}
+								else if(msg[i].message.type && (msg[i].message.type=="genericButtons" || msg[i].message.type=="attachment")){
+									$('#container .main-ul').append('<li class="bot">'+views.genericButtons(msg[i].message)+'</li>');
 								}
 								else{
 									$('#container .main-ul').append('<li class="bot"><div class="text"><span>'+msg[i].message.text+'</span></div><br/></li>');
@@ -236,6 +263,9 @@
 											}
 											else if(msg.type && msg.type=="listTemplate"){
 												$('#container .main-ul').append('<li class="bot">'+views.listTemplate(msg)+'</li>');
+											}
+											else if(msg.type && (msg.type=="genericButtons" || msg.type == "attachment")){
+												$('#container .main-ul').append('<li class="bot">'+views.genericButtons(msg)+'</li>');
 											}
 											else{
 													$('#container .main-ul').append('<li class="bot"><div class="text"><span>'+msg.text+'</span></div><br/></li>');
