@@ -38,7 +38,12 @@ var messages = {
 			viewMoreButtonUrl : "View More Url",
 			viewMoreButtonName : "View More Name",
 			addAttachment : "Add Attachment",
-			removeAttachment : "Remove Attachment"
+			removeAttachment : "Remove Attachment",
+			training : "Training",
+			trainingPage : "Training Page",
+			removeValidation  : "Remove",
+			addValidation : "Validate",
+			threshold : "Threshold"
 		}
 	},
 	tr: {
@@ -70,7 +75,7 @@ var messages = {
 			removeButton : "Buton Kald\u0131r",
 			remove : "Kald\u0131r",
 			addCarousel: "Slider Ekle",
-			removeCarousel: "Slider Kad\u0131r",
+			removeCarousel: "Slider Kald\u0131r",
 			addQuickReply: "Quick Reply Ekle",
 			removeQuickReply: "Quick Reply Kad\u0131r",
 			selectIntent : "Intent Se\u00E7iniz",
@@ -80,8 +85,12 @@ var messages = {
 			viewMoreButtonUrl : "Daha Fazla I\u00E7in Url",
 			viewMoreButtonName : "Daha Fazla I\u00E7in Isim",
 			addAttachment : "Dosya Ekle",
-			removeAttachment : "Dosya \u00C7\u0131kar"
-
+			removeAttachment : "Dosya \u00C7\u0131kar",
+			training : "E\u011Fitim",
+			trainingPage : "E\u011Fitim Sayfas\u0131",
+			removeValidation  : "Sil",
+			addValidation : "Onayla",
+			threshold : "Threshold"
 		}
 	}
 

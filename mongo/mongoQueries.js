@@ -26,6 +26,12 @@ var mongoQueries = class MongoQueries {
       callback(res);
     });
   }
+  findWithLimit(collectionName, callback){
+    this.db.db("conbot").collection(collectionName).find({}).limit(10).toArray(function(err, res) {
+     if (err) throw err;
+      callback(res);
+    });
+  }
   findByQuery(collectionName, query, callback){
     this.db.db("conbot").collection(collectionName).find(query).toArray(function(err, res) {
      if (err) throw err;
@@ -34,6 +40,19 @@ var mongoQueries = class MongoQueries {
   }
   deleteCollection(collectionName){
       this.db.db("conbot").collection(collectionName).drop();
+  }
+  deleteFromTrainingMessage(message, callback){
+    var myquery = {"message":{"text":message}};
+      this.db.db("conbot").collection("training_messages").deleteMany(myquery, function(err, obj) {
+    if (err) throw err;
+      callback(obj);
+    });
+  }
+  updateOne(collectionName, query, newValues, callback){
+    this.db.db("conbot").collection(collectionName).update(query, newValues, function(err, res) {
+     if (err) throw err;
+      callback(res);
+    });
   }
 }
 

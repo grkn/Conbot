@@ -77,7 +77,6 @@ Vue.component('intent',{
 Vue.component('row',{
 	template : '<div class="row"> <intent v-for="(intent,index) in array" v-bind:value="intent.value" v-bind:expressions="intent.expressions" v-bind:index="index" :key="intent.value"></intent></div>',
 	props: ['array']
-
 });
 
 // Intent Sayfasi
@@ -90,7 +89,8 @@ var container = Vue.component('container',{
 								+'</div>'
 								+'<span>'
 									+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>&nbsp;&nbsp;'
-									+'<router-link :to="{ name: \'answersContainer\'}">{{$t("message.answers")}}</router-link>'
+									+'<router-link :to="{ name: \'answersContainer\'}">{{$t("message.answers")}}</router-link>&nbsp;&nbsp;'
+									+'<router-link :to="{ name: \'trainingContainer\'}">{{$t("message.training")}}</router-link>'
 								+'</span>'
 								+'<span style="float:right">'
 									+'<i18n_custom></i18n_custom>'
@@ -261,7 +261,7 @@ Vue.component('carousel_popup',{
 		},
 		removeInputFields : function(){
 			if(this.carousel.length > 1){
-				this.carousel.splice(this.carousel.length - 1 , 1);
+				this.carousel.splice(this.carousel.length - 1, 1);
 			}
 		},
 		incrementButtons : function(car){
@@ -270,29 +270,28 @@ Vue.component('carousel_popup',{
 			}
 		},
 		removeButtons : function(car){
-			if(car.buttons.length >1){
-				car.buttons.splice(car.buttons.length -1 ,1)
+			if(car.buttons.length > 1){
+				car.buttons.splice(car.buttons.length -1, 1)
 			}
 		},
 		save : function(){
-			Vue.http.post("/view/create/carousel", {obj : this.carousel,intent : this.selectedIntent},function(resp){
-				console.log(resp);
+			Vue.http.post("/view/create/carousel", {obj : this.carousel, intent : this.selectedIntent}, function(resp){
+
 			});
 		},
 		selectedIntentFunc : function(){
 			var carouselTemp = this.carousel;
-			Vue.http.post("/view/get/carousel", {intent : this.selectedIntent},function(resp){
-				console.log(resp);
+			Vue.http.post("/view/get/carousel", {intent : this.selectedIntent}, function(resp){
 				if(resp.type && resp.type == 'carousel'){
 					while(0 < carouselTemp.length){
-						carouselTemp.splice(0,1);
+						carouselTemp.splice(0, 1);
 					}
-					for(var i = 0 ; i < resp.value.length;i++){
+					for(var i = 0; i < resp.value.length; i++){
 						carouselTemp.push(resp.value[i]);
 					}
 				}else{
 					while(0 < carouselTemp.length){
-						carouselTemp.splice(0,1);
+						carouselTemp.splice(0, 1);
 					}
 					carouselTemp.push({buttons:[{}]});
 				}
@@ -354,7 +353,7 @@ Vue.component('quickreply_popup',{
 													+'<hr/>'
 												+'</div><!--button in-->'
 												+'<hr/>'
-											+'</div><!--car in-->'
+											+'</div><!--qReply in-->'
 										+'</div><!-- -->'
 									+'</div><!--modal-body-->'
 						      +'<div class="modal-footer">'
@@ -366,36 +365,34 @@ Vue.component('quickreply_popup',{
 					+'</div><!--myModal-->',
 	props : ['entityList'],
 	methods : {
-
 		incrementButtons : function(quickReply){
 			if(quickReply.buttons.length < 5){
 				quickReply.buttons.push({});
 			}
 		},
 		removeButtons : function(quickReply){
-			if(quickReply.buttons.length >1){
-				quickReply.buttons.splice(quickReply.buttons.length -1 ,1)
+			if(quickReply.buttons.length > 1){
+				quickReply.buttons.splice(quickReply.buttons.length -1, 1)
 			}
 		},
-
 		save : function(){
-			Vue.http.post("/view/create/quickReply", {obj : this.quickReply,intent : this.selectedIntent},function(resp){
-				console.log(resp);
+			Vue.http.post("/view/create/quickReply", {obj : this.quickReply, intent : this.selectedIntent}, function(resp){
+
 			});
 		},
 		selectedIntentFunc : function(){
 			var quickReplyTemp = this.quickReply;
-			Vue.http.post("/view/get/quickReply", {intent : this.selectedIntent},function(resp){
+			Vue.http.post("/view/get/quickReply", {intent : this.selectedIntent}, function(resp){
 				if(resp.type && resp.type == 'quickReply'){
 					while(0 < quickReplyTemp.length){
-						quickReplyTemp.splice(0,1);
+						quickReplyTemp.splice(0, 1);
 					}
-					for(var i = 0 ; i < resp.value.length;i++){
+					for(var i = 0; i < resp.value.length; i++){
 						quickReplyTemp.push(resp.value[i]);
 					}
 				}else{
 					while(0 < quickReplyTemp.length){
-						quickReplyTemp.splice(0,1);
+						quickReplyTemp.splice(0, 1);
 					}
 					quickReplyTemp.push({buttons:[{}]});
 				}
@@ -426,8 +423,7 @@ Vue.component('createQuickReply',{
 	}
 });
 
-
-
+// list Template popup
 Vue.component('listTemplate_popup',{
 	template :'<div id="myModalListTemplate" class="modal fade" role="dialog">'
 							+'<div class="modal-dialog">'
@@ -487,7 +483,7 @@ Vue.component('listTemplate_popup',{
 		},
 		removeInputFields : function(){
 			if(this.listTemplate.list.length > 1){
-				this.listTemplate.list.splice(this.listTemplate.list.length - 1 , 1);
+				this.listTemplate.list.splice(this.listTemplate.list.length - 1, 1);
 			}
 		},
 		incrementButtons : function(listTemplate){
@@ -496,30 +492,30 @@ Vue.component('listTemplate_popup',{
 			}
 		},
 		removeButtons : function(listTemplate){
-			if(listTemplate.list.buttons.length >0){
-				listTemplate.list.buttons.splice(listTemplate.list.buttons.length -1 ,1)
+			if(listTemplate.list.buttons.length > 0){
+				listTemplate.list.buttons.splice(listTemplate.list.buttons.length -1, 1)
 			}
 		},
 		save : function(){
-			Vue.http.post("/view/create/listTemplate", {obj : this.listTemplate,intent : this.selectedIntent},function(resp){
-				console.log(resp);
+			Vue.http.post("/view/create/listTemplate", {obj : this.listTemplate, intent : this.selectedIntent}, function(resp){
+
 			});
 		},
 		selectedIntentFunc : function(){
 			var listTemplate = this.listTemplate;
-			Vue.http.post("/view/get/quickReply", {intent : this.selectedIntent},function(resp){
+			Vue.http.post("/view/get/quickReply", {intent : this.selectedIntent}, function(resp){
 				if(resp.type && resp.type == 'listTemplate'){
 					while(0 < listTemplate.list.length){
-						listTemplate.list.splice(0,1);
+						listTemplate.list.splice(0, 1);
 					}
 					listTemplate.viewMoreButtonUrl = resp.value.viewMoreButtonUrl;
 					listTemplate.viewMoreButtonName = resp.value.viewMoreButtonName;
-					for(var i = 0 ; i < resp.value.list.length;i++){
+					for(var i = 0; i < resp.value.list.length; i++){
 						listTemplate.list.push(resp.value.list[i]);
 					}
 				}else{
 					while(0 < listTemplate.list.length){
-						listTemplate.list.splice(0,1);
+						listTemplate.list.splice(0, 1);
 					}
 					listTemplate.list.push({buttons:[{}]});
 					listTemplate.viewMoreButtonUrl = "";
@@ -538,6 +534,7 @@ Vue.component('listTemplate_popup',{
 	}
 });
 
+// Add list Template
 Vue.component('createListTemplate',{
 	template :'<div style="display:inline-block; padding-right:1%;">'
 							+'<button v-on:click="loadPopup" type="button" class="btn btn-info">List Template</button>'
@@ -551,14 +548,14 @@ Vue.component('createListTemplate',{
 	}
 });
 
-
+// Generic Buttons popup
 Vue.component('generic_buttons_popup',{
 	template :'<div id="myModalGenericButtons" class="modal fade" role="dialog">'
 							+'<div class="modal-dialog">'
 						    +'<div class="modal-content">'
 						      +'<div class="modal-header">'
 						        +'<button type="button" class="close" data-dismiss="modal">&times;</button>'
-						        +'<h4 class="modal-title">Carousel</h4>'
+						        +'<h4 class="modal-title">Generic Buttons</h4>'
 						      +'</div>'
 						      +'<div class="modal-body">'
 						        +'<div><span>{{$t("message.selectIntent")}}</span>&nbsp;&nbsp;'
@@ -568,13 +565,13 @@ Vue.component('generic_buttons_popup',{
 										+'</div>'
 										+'<br/>'
 										+'<div>'
-											+'<div v-for="car in genericButtons">'
+											+'<div v-for="gButtons in genericButtons">'
 												+'<table style="width:100%">'
-													+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="car.text"/></td></tr>'
+													+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="gButtons.text"/></td></tr>'
 												+'</table>'
-												+'<button style="float:right" class="btn btn-info" v-on:click="removeButtons(car)">{{$t("message.removeButton")}}</button>'
-												+'<button style="float:right" class="btn btn-info" v-on:click="incrementButtons(car)">{{$t("message.addButton")}}</button>'
-												+'<div v-for="button in car.buttons">'
+												+'<button style="float:right" class="btn btn-info" v-on:click="removeButtons(gButtons)">{{$t("message.removeButton")}}</button>'
+												+'<button style="float:right" class="btn btn-info" v-on:click="incrementButtons(gButtons)">{{$t("message.addButton")}}</button>'
+												+'<div v-for="button in gButtons.buttons">'
 													+'<table style="width:100%">'
 														+'<tr><td><label>{{$t("message.url")}}</label></td><td><input type="text" v-model="button.url"/></td></tr>'
 														+'<tr><td><label>{{$t("message.name")}}</label></td><td><input type="text" v-model="button.name"/></td></tr>'
@@ -583,7 +580,7 @@ Vue.component('generic_buttons_popup',{
 													+'<hr/>'
 												+'</div><!--button in-->'
 												+'<hr/>'
-											+'</div><!--car in-->'
+											+'</div><!--gButtons in-->'
 										+'</div><!-- -->'
 									+'</div><!--modal-body-->'
 						      +'<div class="modal-footer">'
@@ -602,38 +599,36 @@ Vue.component('generic_buttons_popup',{
 		},
 		removeInputFields : function(){
 			if(this.genericButtons.length > 1){
-				this.genericButtons.splice(this.genericButtons.length - 1 , 1);
+				this.genericButtons.splice(this.genericButtons.length - 1, 1);
 			}
 		},
-		incrementButtons : function(car){
-			if(car.buttons.length < 3){
-				car.buttons.push({});
+		incrementButtons : function(gButtons){
+			if(gButtons.buttons.length < 3){
+				gButtons.buttons.push({});
 			}
 		},
-		removeButtons : function(car){
-			if(car.buttons.length >1){
-				car.buttons.splice(car.buttons.length -1 ,1)
+		removeButtons : function(gButtons){
+			if(gButtons.buttons.length > 1){
+				gButtons.buttons.splice(gButtons.buttons.length -1, 1)
 			}
 		},
 		save : function(){
-			Vue.http.post("/view/create/genericButtons", {obj : this.genericButtons,intent : this.selectedIntent},function(resp){
-				console.log(resp);
+			Vue.http.post("/view/create/genericButtons", {obj : this.genericButtons, intent : this.selectedIntent}, function(resp){
 			});
 		},
 		selectedIntentFunc : function(){
 			var genericButtons = this.genericButtons;
-			Vue.http.post("/view/get/genericButtons", {intent : this.selectedIntent},function(resp){
-				console.log(resp);
+			Vue.http.post("/view/get/genericButtons", {intent : this.selectedIntent}, function(resp){
 				if(resp.type && resp.type == 'genericButtons'){
 					while(0 < genericButtons.length){
-						genericButtons.splice(0,1);
+						genericButtons.splice(0, 1);
 					}
-					for(var i = 0 ; i < resp.value.length;i++){
+					for(var i = 0; i < resp.value.length; i++){
 						genericButtons.push(resp.value[i]);
 					}
 				}else{
 					while(0 < genericButtons.length){
-						genericButtons.splice(0,1);
+						genericButtons.splice(0, 1);
 					}
 					genericButtons.push({buttons:[{}]});
 				}
@@ -650,104 +645,7 @@ Vue.component('generic_buttons_popup',{
 	}
 });
 
-Vue.component('attachment_popup',{
-	template :'<div id="myModalAttachment" class="modal fade" role="dialog">'
-							+'<div class="modal-dialog">'
-						    +'<div class="modal-content">'
-						      +'<div class="modal-header">'
-						        +'<button type="button" class="close" data-dismiss="modal">&times;</button>'
-						        +'<h4 class="modal-title">Carousel</h4>'
-						      +'</div>'
-						      +'<div class="modal-body">'
-						        +'<div><span>{{$t("message.selectIntent")}}</span>&nbsp;&nbsp;'
-												+'<select v-model="selectedIntent" v-on:change="selectedIntentFunc"><optgroup v-for="intentList in list">'
-													+'<option v-for="intent in intentList" v-bind:value="intent.value">{{intent.value}}</option></optgroup>'
-												+'</select>'
-										+'</div>'
-										+'<br/>'
-										+'<div>'
-											+'<div v-for="car in genericButtons">'
-												+'<table style="width:100%">'
-													+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="car.text"/></td></tr>'
-												+'</table>'
-												+'<button style="float:right" class="btn btn-info" v-on:click="removeButtons(car)">{{$t("message.removeAttachment")}}</button>'
-												+'<button style="float:right" class="btn btn-info" v-on:click="incrementButtons(car)">{{$t("message.addAttachment")}}</button>'
-												+'<div v-for="button in car.buttons">'
-													+'<table style="width:100%">'
-														+'<tr><td><label>{{$t("message.url")}}</label></td><td><input type="text" v-model="button.url"/></td></tr>'
-														+'<tr><td><label>{{$t("message.name")}}</label></td><td><input type="text" v-model="button.name"/></td></tr>'
-														+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="button.text"/></td></tr>'
-													+'</table>'
-													+'<hr/>'
-												+'</div><!--button in-->'
-												+'<hr/>'
-											+'</div><!--car in-->'
-										+'</div><!-- -->'
-									+'</div><!--modal-body-->'
-						      +'<div class="modal-footer">'
-						        +'<button type="button" class="btn btn-default" data-dismiss="modal">{{$t("message.close")}}</button>'
-										+'<button type="button" class="btn btn-info" v-on:click="save">{{$t("message.save")}}</button>'
-						      +'</div>'
-						    +'</div><!--modal-content-->'
-						+'</div><!--modal-dialog-->'
-					+'</div><!--myModal-->',
-	props : ['entityList'],
-	methods : {
-		incrementInputFields : function(){
-			if(this.genericButtons.length < 4){
-					this.genericButtons.push({buttons:[{}]});
-			}
-		},
-		removeInputFields : function(){
-			if(this.genericButtons.length > 1){
-				this.genericButtons.splice(this.genericButtons.length - 1 , 1);
-			}
-		},
-		incrementButtons : function(car){
-			if(car.buttons.length < 3){
-				car.buttons.push({});
-			}
-		},
-		removeButtons : function(car){
-			if(car.buttons.length >1){
-				car.buttons.splice(car.buttons.length -1 ,1)
-			}
-		},
-		save : function(){
-			Vue.http.post("/view/create/attachment", {obj : this.genericButtons,intent : this.selectedIntent},function(resp){
-				console.log(resp);
-			});
-		},
-		selectedIntentFunc : function(){
-			var genericButtons = this.genericButtons;
-			Vue.http.post("/view/get/attachment", {intent : this.selectedIntent},function(resp){
-				console.log(resp);
-				if(resp.type && resp.type == 'attachment'){
-					while(0 < genericButtons.length){
-						genericButtons.splice(0,1);
-					}
-					for(var i = 0 ; i < resp.value.length;i++){
-						genericButtons.push(resp.value[i]);
-					}
-				}else{
-					while(0 < genericButtons.length){
-						genericButtons.splice(0,1);
-					}
-					genericButtons.push({buttons:[{}]});
-				}
-			});
-		}
-	},
-	mounted : function(){
-		this.$nextTick(function () {
-			this.list = this.entityList;
-  	})
-	},
-	data :	function () {
-		return {list :[], selectedIntent:"", genericButtons:[{buttons:[{}]}]}
-	}
-});
-
+// Add Generic Buttons
 Vue.component('createGenericButtons',{
 	template :'<div style="display:inline-block; padding-right:1%;">'
 							+'<button v-on:click="loadPopup" type="button" class="btn btn-info">Generic Buttons</button>'
@@ -761,6 +659,105 @@ Vue.component('createGenericButtons',{
 	}
 });
 
+// Attachment popup
+Vue.component('attachment_popup',{
+	template :'<div id="myModalAttachment" class="modal fade" role="dialog">'
+							+'<div class="modal-dialog">'
+						    +'<div class="modal-content">'
+						      +'<div class="modal-header">'
+						        +'<button type="button" class="close" data-dismiss="modal">&times;</button>'
+						        +'<h4 class="modal-title">Attachment</h4>'
+						      +'</div>'
+						      +'<div class="modal-body">'
+						        +'<div><span>{{$t("message.selectIntent")}}</span>&nbsp;&nbsp;'
+												+'<select v-model="selectedIntent" v-on:change="selectedIntentFunc"><optgroup v-for="intentList in list">'
+													+'<option v-for="intent in intentList" v-bind:value="intent.value">{{intent.value}}</option></optgroup>'
+												+'</select>'
+										+'</div>'
+										+'<br/>'
+										+'<div>'
+											+'<div v-for="atch in genericButtons">'
+												+'<table style="width:100%">'
+													+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="atch.text"/></td></tr>'
+												+'</table>'
+												+'<button style="float:right" class="btn btn-info" v-on:click="removeButtons(atch)">{{$t("message.removeAttachment")}}</button>'
+												+'<button style="float:right" class="btn btn-info" v-on:click="incrementButtons(atch)">{{$t("message.addAttachment")}}</button>'
+												+'<div v-for="button in atch.buttons">'
+													+'<table style="width:100%">'
+														+'<tr><td><label>{{$t("message.url")}}</label></td><td><input type="text" v-model="button.url"/></td></tr>'
+														+'<tr><td><label>{{$t("message.name")}}</label></td><td><input type="text" v-model="button.name"/></td></tr>'
+														+'<tr><td><label>{{$t("message.text")}}</label></td><td><input type="text" v-model="button.text"/></td></tr>'
+													+'</table>'
+													+'<hr/>'
+												+'</div><!--button in-->'
+												+'<hr/>'
+											+'</div><!--atch in-->'
+										+'</div><!-- -->'
+									+'</div><!--modal-body-->'
+						      +'<div class="modal-footer">'
+						        +'<button type="button" class="btn btn-default" data-dismiss="modal">{{$t("message.close")}}</button>'
+										+'<button type="button" class="btn btn-info" v-on:click="save">{{$t("message.save")}}</button>'
+						      +'</div>'
+						    +'</div><!--modal-content-->'
+						+'</div><!--modal-dialog-->'
+					+'</div><!--myModal-->',
+	props : ['entityList'],
+	methods : {
+		incrementInputFields : function(){
+			if(this.genericButtons.length < 4){
+					this.genericButtons.push({buttons:[{}]});
+			}
+		},
+		removeInputFields : function(){
+			if(this.genericButtons.length > 1){
+				this.genericButtons.splice(this.genericButtons.length - 1, 1);
+			}
+		},
+		incrementButtons : function(atch){
+			if(atch.buttons.length < 3){
+				atch.buttons.push({});
+			}
+		},
+		removeButtons : function(atch){
+			if(atch.buttons.length > 1){
+				atch.buttons.splice(atch.buttons.length -1, 1)
+			}
+		},
+		save : function(){
+			Vue.http.post("/view/create/attachment", {obj : this.genericButtons, intent : this.selectedIntent}, function(resp){
+
+			});
+		},
+		selectedIntentFunc : function(){
+			var genericButtons = this.genericButtons;
+			Vue.http.post("/view/get/attachment", {intent : this.selectedIntent}, function(resp){
+				if(resp.type && resp.type == 'attachment'){
+					while(0 < genericButtons.length){
+						genericButtons.splice(0, 1);
+					}
+					for(var i = 0; i < resp.value.length; i++){
+						genericButtons.push(resp.value[i]);
+					}
+				}else{
+					while(0 < genericButtons.length){
+						genericButtons.splice(0, 1);
+					}
+					genericButtons.push({buttons:[{}]});
+				}
+			});
+		}
+	},
+	mounted : function(){
+		this.$nextTick(function () {
+			this.list = this.entityList;
+  	})
+	},
+	data :	function () {
+		return {list :[], selectedIntent:"", genericButtons:[{buttons:[{}]}]}
+	}
+});
+
+// Add Attachment
 Vue.component('createAttachment',{
 	template :'<div style="display:inline-block; padding-right:1%;">'
 							+'<button v-on:click="loadPopup" type="button" class="btn btn-info">Attachment</button>'
@@ -773,8 +770,6 @@ Vue.component('createAttachment',{
 		}
 	}
 });
-
-
 
 // Answers cevap ekleme
 Vue.component('answers',{
@@ -844,12 +839,13 @@ var answersContainer = Vue.component("answersContainer",{
 	template:'<div class="container">'
 						+'<div class="header">'
 							+'<div class="page-header">'
-								+'<div  style="text-align:center">'
+								+'<div style="text-align:center">'
 									+'<h1>{{$t("message.answerPage")}}</h1>'
 								+'</div>'
 								+'<span>'
 									+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>&nbsp;&nbsp;'
-									+'<router-link :to="{ name: \'answersContainer\'}">{{$t("message.answers")}}</router-link>'
+									+'<router-link :to="{ name: \'answersContainer\'}">{{$t("message.answers")}}</router-link>&nbsp;&nbsp;'
+									+'<router-link :to="{ name: \'trainingContainer\'}">{{$t("message.training")}}</router-link>'
 								+'</span>'
 								+'<span style="float:right">'
 									+'<i18n_custom></i18n_custom>'
@@ -958,11 +954,120 @@ var answersContainer = Vue.component("answersContainer",{
 	}
 });
 
+// Training sayfasi
+var trainingContainer = Vue.component("trainingContainer",{
+	template:'<div class="container">'
+						+'<div class="header">'
+							+'<div class="page-header">'
+								+'<div style="text-align:center">'
+									+'<h1>{{$t("message.trainingPage")}}</h1>'
+								+'</div>'
+								+'<span>'
+									+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>&nbsp;&nbsp;'
+									+'<router-link :to="{ name: \'answersContainer\'}">{{$t("message.answers")}}</router-link>&nbsp;&nbsp;'
+									+'<router-link :to="{ name: \'trainingContainer\'}">{{$t("message.training")}}</router-link>'
+								+'</span>'
+								+'<span style="float:right">'
+									+'<i18n_custom></i18n_custom>'
+								+'</span>'
+							+'</div> <!--page-header-->'
+						+'</div> <!--header-->'
+						+'<div class="content">'
+							+'<div class="col-md-10">'
+								+'<div><label>{{$t("message.threshold")}}</label>&nbsp;&nbsp;&nbsp;<select v-on:change="changeThreshold" v-model="threshold.val"><option value="0.1">0.1</option><option value="0.2">0.2</option>'
+								+'<option value="0.3">0.3</option><option value="0.4">0.4</option><option value="0.5">0.5</option><option value="0.6">0.6</option><option value="0.7">0.7</option>'
+								+'<option value="0.8">0.8</option><option value="0.9">0.9</option>'
+								+'</select></div>'
+								+'<br/><br/>'
+								+'<training v-for="validateText in this.validateTextList" v-bind:array="validateText"></training>'
+							+'</div>'
+						+'</div> <!--content-->'
+					+'</div> <!--container-->',
+	methods : {
+		changeThreshold : function(){
+			Vue.http.get("/change/threshold/"+this.threshold.val).then(function(resp){
+			});
+		},
+		mountFunc : function(iList){
+				Vue.http.get("/mongo/findByLimitTen/training_messages").then(function(resp){
+						for(var i = 0; i < resp.data.length; i ++){
+							iList.push(resp.data[i]);
+						}
+				});
+		}
+	},
+	mounted : function(){
+		this.$nextTick(function () {
+			var thresholdTemp = this.threshold;
+			Vue.http.get("/get/threshold/").then(function(resp){
+				debugger;
+					thresholdTemp.val =resp.data[0].threshold;
+			});
+			this.mountFunc(this.validateTextList);
+	  })
+	},
+	data :	function () {
+		return {validateTextList :[],	threshold :{val : 0.7}}
+	}
+});
+
+// Training row içinde
+Vue.component('training',{
+	template :'<div class="row"><div class="col-md-12">'
+							+'<div class="thumbnail">'
+						  	+'<div class="caption">'
+									+'<h3> {{array.message.text}}</h3>'
+									+'<p>'
+									+'<select v-model="selectedIntent" >'
+										+'<option v-for="intent in intentList" v-bind:value="intent.value">{{intent.value}}</option>'
+									+'</select>'
+									+'<span style="float:right">{{array.confidenceLevel}}</span>'
+									+'</p>'
+									+'<p>'
+										+'<a class="btn btn-info" role="button" v-on:click="deleteMessage">{{$t("message.removeValidation")}}</a>'
+										+'<a class="btn btn-default" role="button"  v-on:click="validate">{{$t("message.addValidation")}}</a>'
+									+'</p>'
+							  +'</div>'
+							+'</div>'
+					  +'</div>'
+						+'</div>',
+	props: ['array'],
+	methods : {
+		validate : function(){
+			Vue.http.post("/witai/validate", {"intent" : this.selectedIntent, "message" : this.array.message.text}).then(function(resp){
+				window.location.reload();
+			});
+		},
+		deleteMessage : function(){
+			Vue.http.post("/witai/delete", {"message" : this.array.message.text}).then(function(resp){
+				window.location.reload();
+			});
+		}
+	},
+	mounted : function(){
+		this.$nextTick(function () {
+			this.selectedIntent = this.array.intentName;
+			if(this.array.confidenceLevel)
+			this.array.confidenceLevel = Math.round(this.array.confidenceLevel * 1000) / 1000;
+				var intentListTemp = this.intentList;
+				Vue.http.get("/get/witai/entities").then(function(resp){
+						for(var i = 0; i < resp.data.values.length; i++){
+							intentListTemp.push(resp.data.values[i]);
+						}
+				});
+	  });
+	},
+	data :	function () {
+		return {sentence : {value : ""}, selectedIntent : "", intentList : []}
+	}
+});
+
 // Menu isimleri
 var vrouter = new VueRouter({
 	routes: [
 		{name: 'home', path: '/', component: container},
-		{name: 'answersContainer', path: '/answersContainer', component: answersContainer}
+		{name: 'answersContainer', path: '/answers', component: answersContainer},
+		{name: 'trainingContainer', path: '/training', component: trainingContainer}
 	]
 });
 
