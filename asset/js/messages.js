@@ -26,7 +26,17 @@ var messages = {
 			save : "Save",
 			close : "Close",
 			removeButton : "Remove Button",
-			remove : "Remove"
+			remove : "Remove",
+			addCarousel: "Add Slider",
+			removeCarousel: "Remove Slider",
+			addQuickReply: "Add QuickReply",
+			removeQuickReply: "Remove QuickReply",
+			selectIntent : "Select Intent",
+			content : "Enter Content",
+			addListItem : "Add List Item",
+			removeListItem : "Remove List Item",
+			viewMoreButtonUrl : "View More Url",
+			viewMoreButtonName : "View More Name"
 		}
 	},
 	tr: {
@@ -57,10 +67,17 @@ var messages = {
 			close : "Kapat",
 			removeButton : "Buton Kald\u0131r",
 			remove : "Kald\u0131r",
-			addCarousel: "Carousel Ekle",
-			removeCarousel: "Carousel Kad\u0131r",
+			addCarousel: "Slider Ekle",
+			removeCarousel: "Slider Kad\u0131r",
 			addQuickReply: "Quick Reply Ekle",
-			removeQuickReply: "Quick Reply Kad\u0131r"
+			removeQuickReply: "Quick Reply Kad\u0131r",
+			selectIntent : "Intent Se\u00E7iniz",
+			content : "I\u00E7erik Giriniz",
+			addListItem : "List Item Ekle",
+			removeListItem : "List Item Sil",
+			viewMoreButtonUrl : "Daha Fazla I\u00E7in Url",
+			viewMoreButtonName : "Daha Fazla I\u00E7in Isim"
+
 		}
 	}
 

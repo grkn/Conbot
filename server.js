@@ -1,4 +1,5 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var cors = require('cors');
 var firebase = require('firebase');
 var mongo = require('mongodb').MongoClient;
@@ -9,6 +10,7 @@ var MongoQueries = require('./mongo/mongoQueries');
 var SkypeClass = require('./skype/skypeClass');
 var Client = require('node-rest-client').Client;
 var Carousel = require('./views/carousel');
+const queryString = require('query-string');
 var client = new Client();
 
 
@@ -36,8 +38,8 @@ app.use(function (req, res, next) {
 });
 
 
-app.get('/chatbot',function(req,res){
-  res.sendFile(__dirname + "/chat.html");
+app.get('/webchat',function(req,res){
+  res.sendFile(__dirname + "/webchat/webchat.html");
 })
 // html i ekrana basıyor
 app.get('/',function(req,res){
@@ -218,11 +220,12 @@ app.post('/send/meaningful/sentence',cors(), function (req, res) {
 
 // intent icin cevap getirme
 app.get('/get/meaningful/sentence',cors(), function (req, res) {
+
   var ref = firebase.database().ref("/answer");
   ref.once("value", function(snapshot) {
       var array = snapshot.val();
       for(var key in array){
-        if(array[key].key == req.query.intent){
+        if(array[key].key == queryString.parse(req.query()).intent){
           res.send({resp : array[key].value , type : array[key].type});
           return;
         }
@@ -237,7 +240,7 @@ app.delete('/delete/meaningful/sentence',cors(), function (req, res) {
   ref.once("value", function(snapshot) {
       snapshot.forEach(function(childSnapshot) {
         ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
-          if(itemSnapshot.val().key == req.query.intent){
+          if(itemSnapshot.val().key == queryString.parse(req.query()).intent){
             itemSnapshot.delete();
           }
         });
@@ -250,7 +253,7 @@ app.get('/api/getMessage/dialogFlow',cors(),function(req,res){
   var dialog = {
     data : {
               "lang": "en",
-              "query": req.query.message,
+              "query": queryString.parse(req.query()).message,
               "sessionId": "12345",
               "timezone": "Asia/Istanbul"
             },
@@ -354,6 +357,77 @@ app.post('/view/get/carousel',cors(),function(req,res){
       }
     });
 });
+
+app.post('/view/create/quickReply',cors(),function(req,res){
+    var ref = firebase.database().ref("/answer");
+    var set = { 'key' : req.body.intent, 'value' : req.body.obj , 'type' : 'quickReply'};
+    ref.child("/").once("value", function(snapshot) {
+      var found = false;
+      snapshot.forEach(function(userSnapshot) {
+          if(userSnapshot.val().key == set.key){
+            ref.child("/").child(userSnapshot.key).update(set);
+            found = true;
+          }
+      });
+      if(!found){
+        ref.child("/").push(set)
+      }
+    });
+    res.send({ resp : "OK"});
+});
+
+app.post('/view/create/listTemplate',cors(),function(req,res){
+    var ref = firebase.database().ref("/answer");
+    var set = { 'key' : req.body.intent, 'value' : req.body.obj , 'type' : 'listTemplate'};
+    ref.child("/").once("value", function(snapshot) {
+      var found = false;
+      snapshot.forEach(function(userSnapshot) {
+          if(userSnapshot.val().key == set.key){
+            ref.child("/").child(userSnapshot.key).update(set);
+            found = true;
+          }
+      });
+      if(!found){
+        ref.child("/").push(set)
+      }
+    });
+    res.send({ resp : "OK"});
+});
+
+app.post('/view/get/listTemplate',cors(),function(req,res){
+    var ref = firebase.database().ref("/answer");
+    ref.child("/").once("value", function(snapshot) {
+      var found = false;
+      snapshot.forEach(function(userSnapshot) {
+          if(userSnapshot.val().key == req.body.intent){
+            res.send(userSnapshot.val())
+            found = true;
+          }
+      });
+      if(!found){
+        res.send({resp : "NOT_FOUND"});
+      }
+    });
+});
+
+
+
+app.post('/view/get/quickReply',cors(),function(req,res){
+    var ref = firebase.database().ref("/answer");
+    ref.child("/").once("value", function(snapshot) {
+      var found = false;
+      snapshot.forEach(function(userSnapshot) {
+          if(userSnapshot.val().key == req.body.intent){
+            res.send(userSnapshot.val())
+            found = true;
+          }
+      });
+      if(!found){
+        res.send({resp : "NOT_FOUND"});
+      }
+    });
+});
+
 
 // angular facebook deploy get
 app.get('/facebook/get', cors(), function (req, res) {
