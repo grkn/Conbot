@@ -1138,7 +1138,7 @@ var facebookContainer = Vue.component("facebookContainer",{
 								+'</div>'
 								+'<div class="form-group">'
 									+'<div class="col-sm-offset-2 col-sm-10">'
-										+'<button type="button" class="btn btn-default">Deploy</button>'
+										+'<button type="button" class="btn btn-default" v-on:click="deploy">Deploy</button>'
 									+'</div>'
 								+'</div>'
 							+'</form>'
@@ -1146,7 +1146,10 @@ var facebookContainer = Vue.component("facebookContainer",{
 						+'</div> <!--content-->'
 					+'</div> <!--container-->',
 	methods : {
-
+			deploy : function(){
+				Vue.http.post('/facebook/post',{facebookDeployment : this.facebookDeployment.values},function(resp){
+				});
+			}
 	},
 	mounted : function(){
 

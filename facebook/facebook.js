@@ -11,14 +11,14 @@ var client = new Client();
 'use strict'
 var facebookclass= class FacebookBotClass {
 
-	constructor(pageId,appId,appSecret,pageToken,verifyToken,global,firebase) {
+	constructor(pageId,appId,appSecret,pageToken,verifyToken,globals,firebase) {
         this.bot  = new Bot({
 								  token: pageToken,
 								  verify: verifyToken,
 								  app_secret: appSecret
 								});
 			this.token = pageToken;
-			this.global = global;
+			this.global = globals;
 			this.firebase = firebase;
   }
 
@@ -135,8 +135,12 @@ var facebookclass= class FacebookBotClass {
 				}
 
 			}
+			var globals = this.global;
+			var firebase = this.firebase;
+			var bot = this.bot;
+			var listTemplateFunc = this.listtemplate;
 			client.get("https://api.wit.ai/message?q="+encodeURIComponent(payload.message.text),wit,function(response){
-				console.log(response.entities.intent[0]);
+
 				if(response.entities && response.entities.intent && response.entities.intent.length > 0){
 					var max = -1;
 		      var maxValue = "";
@@ -147,16 +151,16 @@ var facebookclass= class FacebookBotClass {
 		        }
 		      }
 		      //max configdence sahip intent i bulamadıysam
-		      if(max < this.global.threshold){
-		        var random = Math.floor(Math.random() * (this.global.responseList.length - 1));
-						var text = this.global.responseList[random];
+		      if(max < globals.threshold){
+		        var random = Math.floor(Math.random() * (globals.responseList.length - 1));
+						var text = globals.responseList[random];
 						reply({text}, function(err){
 								console.log(err);
 						});
 		        return;
 		      }
 
-					var ref = this.firebase.database().ref("/answer");
+					var ref = firebase.database().ref("/answer");
 					ref.once("value", function(snapshot) {
 							snapshot.forEach(function(childSnapshot) {
 								ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
@@ -164,7 +168,7 @@ var facebookclass= class FacebookBotClass {
 										var total = {text : itemSnapshot.val().value, type : itemSnapshot.val().type, intent : itemSnapshot.val().key};
 										var listTemplate = new ListTemplate(total.text);
 
-										this.bot.sendMessage(payload.sender.id, this.listtemplate(listTemplate.createListTemplate()), function(resp){
+										bot.sendMessage(payload.sender.id, listTemplateFunc(listTemplate.createListTemplate()), function(resp){
 											console.log(resp);
 										});
 									}
@@ -173,8 +177,8 @@ var facebookclass= class FacebookBotClass {
 					});
 
 				}else{
-						var random = Math.floor(Math.random() * (this.global.responseList.length - 1));
-						var text=this.global.responseList[random];
+						var random = Math.floor(Math.random() * (globals.responseList.length - 1));
+						var text=globals.responseList[random];
 					  reply({text}, function(err){
 					 		 console.log(err);
 					  });

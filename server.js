@@ -544,7 +544,7 @@ app.post('/facebook/post', cors(), function (req, res) {
     req.body.facebookDeployment.appId,
     req.body.facebookDeployment.appSecret,
     req.body.facebookDeployment.accessToken,
-    req.body.facebookDeployment.verifyToken,this.global,firebase);
+    req.body.facebookDeployment.verifyToken,global,firebase);
 	facebookClass.botListen();
 	res.send({data : "OK"});
 });

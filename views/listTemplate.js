@@ -6,23 +6,27 @@ var listTemplate = class ListTemplate {
     var buttons = [];
     for(var i = 0; i < array.length ; i++){
       var aButton = {}
-      if(array[i].imgUrl){
-        aButton = {type : "web_url" , url : array[i].imgUrl,title: array[i].name,"webview_height_ratio": "full","messenger_extensions": false};
+      if(array[i].url){
+        aButton = {"type" : "web_url" , "url" : "https://b050986c.eu.ngrok.io/",title: array[i].name,"webview_height_ratio": "full","messenger_extensions": true,"fallback_url": "https://b050986c.eu.ngrok.io/fallback"};
       }else{
         aButton = {type : "postback", title : array[i].name,payload : array[i].text};
       }
+      console.log(aButton);
       buttons.push(aButton);
     }
+    return buttons;
   }
 
   createAListTemplate(title, subtitle,imageUrl, buttons){
-    return {"title" : title, "subtitle" : subtitle, "buttons" : createButtons(buttons)}
+    return {"title" : title, "subtitle" : subtitle, image_url : imageUrl,"buttons" : this.createButtons(buttons)}
   }
   createListTemplate(){
-    var obj = {elements : []};
-    for(var i = 0; i < this.list.length; i++){
-      obj.elements.push(this.createAListTemplate(this.list[i].title, this.list[i].subtitle, this.list[i].imgUrl, this.list[i].buttons));
+    var obj = {elements : [],buttons:[]};
+    for(var i = 0; i < this.list.list.length; i++){
+      obj.elements.push(this.createAListTemplate(this.list.list[i].title, this.list.list[i].subTitle, this.list.list[i].imgUrl, this.list.list[i].buttons));
     }
+    obj.buttons.push({"type" : "postback", "title" : this.list.viewMoreButtonName,"payload" : this.list.viewMoreButtonUrl});
+    console.log(obj);
     return obj;
   }
 }
