@@ -978,7 +978,10 @@ var trainingContainer = Vue.component("trainingContainer",{
 								+'<option value="0.3">0.3</option><option value="0.4">0.4</option><option value="0.5">0.5</option><option value="0.6">0.6</option><option value="0.7">0.7</option>'
 								+'<option value="0.8">0.8</option><option value="0.9">0.9</option>'
 								+'</select>'
-								+'&nbsp;&nbsp;&nbsp;<label>{{$t("message.responseList")}}</label>&nbsp;&nbsp;<input type="text" v-model="response"/>&nbsp;&nbsp;<button type="button" class="btn btn-info" v-on:click="addDefaultResponse">{{$t("message.add")}}</button>&nbsp;&nbsp;<select><option v-for="resp in responseList" v-bind:value="resp">{{resp}}</option></select>'
+								+'&nbsp;&nbsp;&nbsp;<label>{{$t("message.responseList")}}</label>&nbsp;&nbsp;<input type="text" v-model="response"/>'
+								+'&nbsp;&nbsp;<button type="button" class="btn btn-info" v-on:click="addDefaultResponse">{{$t("message.add")}}</button>'
+								+'&nbsp;&nbsp;<select v-model="selectedResponse"><option v-for="resp in responseList" v-bind:value="resp">{{resp}}</option></select>'
+								+'&nbsp;&nbsp;<button type="button" class="btn btn-info" v-on:click="deleteDefaultMessage">{{$t("message.remove")}}</button>'
 								+'</div>'
 								+'<br/><br/>'
 								+'<training v-for="validateText in this.validateTextList" v-bind:array="validateText"></training>'
@@ -994,6 +997,13 @@ var trainingContainer = Vue.component("trainingContainer",{
 			this.responseList.push(this.response);
 			Vue.http.get("/add/responseList/"+this.response).then(function(resp){
 			});
+		},
+		deleteDefaultMessage : function(){
+			if(this.selectedResponse.trim() != ""){
+				this.responseList.splice(this.responseList.indexOf(this.selectedResponse),1);
+				Vue.http.delete("/add/responseList/"+this.selectedResponse).then(function(resp){
+				});
+			}
 		},
 		mountFunc : function(iList){
 				Vue.http.get("/mongo/findByLimitTen/training_messages").then(function(resp){
@@ -1017,7 +1027,7 @@ var trainingContainer = Vue.component("trainingContainer",{
 	  })
 	},
 	data :	function () {
-		return {validateTextList :[],	threshold :{val : 0.7},responseList :[],response : ""}
+		return {validateTextList :[],	threshold :{val : 0.7},responseList :[],response : "",selectedResponse : ""}
 	}
 });
 
