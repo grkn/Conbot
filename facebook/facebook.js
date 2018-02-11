@@ -1,35 +1,32 @@
 const http = require('http')
 const Bot = require('messenger-bot')
 var Client = require('node-rest-client').Client;
+var ListTemplate = require('../views/listTemplate');
 
 var client = new Client();
+
+
 
 
 'use strict'
 var facebookclass= class FacebookBotClass {
 
-	constructor(pageId,appId,appSecret,pageToken,verifyToken) {
+	constructor(pageId,appId,appSecret,pageToken,verifyToken,global,firebase) {
         this.bot  = new Bot({
 								  token: pageToken,
 								  verify: verifyToken,
 								  app_secret: appSecret
 								});
 			this.token = pageToken;
+			this.global = global;
+			this.firebase = firebase;
   }
 
 	botListen(){
-		this.setWhitelist( ["https://1ed06b63.eu.ngrok.io"]);
+		this.setWhitelist( ["https://b050986c.eu.ngrok.io"]);
 		this.bot.on('error', (err) => {
 		  console.log(err.message)
 		})
-		var msg  = [{
-									"locale":"default",
-									"text":"Hello!"
-								},
-								{
-									"locale":"en_US",
-									"text":"Timeless apparel for the masses."
-								}];
 
 		this.bot.on('message', (payload, reply) => {
 
@@ -60,20 +57,7 @@ var facebookclass= class FacebookBotClass {
 				});
 			});*/
 
-			/*var wit = {
-				data : {
-					parameters: {}
-				},
-				headers : {
-					"Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
-					"Content-Type": "application/json"
-				}
 
-			}
-			client.get("https://api.wit.ai/message?q="+encodeURIComponent(payload.message.text),wit,function(response){
-				console.log(response.entities.intent[0]);
-			});
-*/
 
 /*
 		let loc = {title : 'Please send your location'};
@@ -141,65 +125,63 @@ var facebookclass= class FacebookBotClass {
 			});
 */
 
+			var wit = {
+				data : {
+					parameters: {}
+				},
+				headers : {
+					"Authorization" : "Bearer DSWRM5DAQVXBGOH7BQWO455ERSGWRNR6",
+					"Content-Type": "application/json"
+				}
 
-			let listtemp = { elements : [
-												{
-															"title": "Classic T-Shirt Collection",
-															"subtitle": "See all our colors",
-															"image_url": "https://1ed06b63.eu.ngrok.io/company_image.png",
-															"buttons":[
-																{
-																	"type":"postback",
-																	"title":"Start Chatting",
-																	"payload":"DEVELOPER_DEFINED_PAYLOAD"
-																}
-															]
-														},
-														{
-																	"title": "Classic White T-Shirt",
-																	"subtitle": "See all our colors",
-																	"default_action": {
-																		"type": "web_url",
-																		"url": "https://1ed06b63.eu.ngrok.io/view?item=100",
-																	}
-														},
-														{
-															"title": "Classic Blue T-Shirt",
-															"subtitle": "100% Cotton, 200% Comfortable",
-															"image_url": "https://1ed06b63.eu.ngrok.io/company_image.png",
-															"buttons":[
-																{
-																	"type":"postback",
-																	"title":"Start Chatting",
-																	"payload":"DEVELOPER_DEFINED_PAYLOAD"
-																}
-															]
-														},
-														{
-															"title": "Classic Blue T-Shirt",
-															"subtitle": "100% Cotton, 200% Comfortable",
-															"image_url": "https://1ed06b63.eu.ngrok.io/company_image.png",
-															"buttons":[
-																{
-																	"type":"postback",
-																	"title":"Start Chatting",
-																	"payload":"DEVELOPER_DEFINED_PAYLOAD"
-																}
-															]
-														}
-											 ],
-											 buttons : [
-													 {
-						 								"title": "View More",
-						 								"type": "postback",
-						 								"payload": "payload"
-						 							}
-											 ]
-			};
-			this.bot.sendMessage(payload.sender.id, this.listtemplate(listtemp), function(resp){
-				console.log(resp);
+			}
+			client.get("https://api.wit.ai/message?q="+encodeURIComponent(payload.message.text),wit,function(response){
+				console.log(response.entities.intent[0]);
+				if(response.entities && response.entities.intent && response.entities.intent.length > 0){
+					var max = -1;
+		      var maxValue = "";
+		      for(var i= 0; i < response.entities.intent.length; i++){
+		        if(max <response.entities.intent[i].confidence ){
+		          maxValue = response.entities.intent[i].value;
+		          max = response.entities.intent[i].confidence;
+		        }
+		      }
+		      //max configdence sahip intent i bulamadıysam
+		      if(max < this.global.threshold){
+		        var random = Math.floor(Math.random() * (this.global.responseList.length - 1));
+						var text = this.global.responseList[random];
+						reply({text}, function(err){
+								console.log(err);
+						});
+		        return;
+		      }
+
+					var ref = this.firebase.database().ref("/answer");
+					ref.once("value", function(snapshot) {
+							snapshot.forEach(function(childSnapshot) {
+								ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
+									if(itemSnapshot.val().key == maxValue){
+										var total = {text : itemSnapshot.val().value, type : itemSnapshot.val().type, intent : itemSnapshot.val().key};
+										var listTemplate = new ListTemplate(total.text);
+
+										this.bot.sendMessage(payload.sender.id, this.listtemplate(listTemplate.createListTemplate()), function(resp){
+											console.log(resp);
+										});
+									}
+								});
+							});
+					});
+
+				}else{
+						var random = Math.floor(Math.random() * (this.global.responseList.length - 1));
+						var text=this.global.responseList[random];
+					  reply({text}, function(err){
+					 		 console.log(err);
+					  });
+					  return;
+				}
+
 			});
-
 
 
 /*

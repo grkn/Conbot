@@ -90,7 +90,8 @@ var container = Vue.component('container',{
 								+'<span>'
 									+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>&nbsp;&nbsp;'
 									+'<router-link :to="{ name: \'answersContainer\'}">{{$t("message.answers")}}</router-link>&nbsp;&nbsp;'
-									+'<router-link :to="{ name: \'trainingContainer\'}">{{$t("message.training")}}</router-link>'
+									+'<router-link :to="{ name: \'trainingContainer\'}">{{$t("message.training")}}</router-link>&nbsp;&nbsp;'
+									+'<router-link :to="{ name: \'facebookContainer\'}">Facebook</router-link>&nbsp;&nbsp;'
 								+'</span>'
 								+'<span style="float:right">'
 									+'<i18n_custom></i18n_custom>'
@@ -845,7 +846,8 @@ var answersContainer = Vue.component("answersContainer",{
 								+'<span>'
 									+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>&nbsp;&nbsp;'
 									+'<router-link :to="{ name: \'answersContainer\'}">{{$t("message.answers")}}</router-link>&nbsp;&nbsp;'
-									+'<router-link :to="{ name: \'trainingContainer\'}">{{$t("message.training")}}</router-link>'
+									+'<router-link :to="{ name: \'trainingContainer\'}">{{$t("message.training")}}</router-link>&nbsp;&nbsp;'
+									+'<router-link :to="{ name: \'facebookContainer\'}">Facebook</router-link>&nbsp;&nbsp;'
 								+'</span>'
 								+'<span style="float:right">'
 									+'<i18n_custom></i18n_custom>'
@@ -965,7 +967,8 @@ var trainingContainer = Vue.component("trainingContainer",{
 								+'<span>'
 									+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>&nbsp;&nbsp;'
 									+'<router-link :to="{ name: \'answersContainer\'}">{{$t("message.answers")}}</router-link>&nbsp;&nbsp;'
-									+'<router-link :to="{ name: \'trainingContainer\'}">{{$t("message.training")}}</router-link>'
+									+'<router-link :to="{ name: \'trainingContainer\'}">{{$t("message.training")}}</router-link>&nbsp;&nbsp;'
+									+'<router-link :to="{ name: \'facebookContainer\'}">Facebook</router-link>&nbsp;&nbsp;'
 								+'</span>'
 								+'<span style="float:right">'
 									+'<i18n_custom></i18n_custom>'
@@ -1082,12 +1085,90 @@ Vue.component('training',{
 	}
 });
 
+var facebookContainer = Vue.component("facebookContainer",{
+	template:'<div class="container">'
+						+'<div class="header">'
+							+'<div class="page-header">'
+								+'<div style="text-align:center">'
+									+'<h1>{{$t("message.trainingPage")}}</h1>'
+								+'</div>'
+								+'<span>'
+									+'<router-link :to="{ name: \'home\'}">{{$t("message.home")}}</router-link>&nbsp;&nbsp;'
+									+'<router-link :to="{ name: \'answersContainer\'}">{{$t("message.answers")}}</router-link>&nbsp;&nbsp;'
+									+'<router-link :to="{ name: \'trainingContainer\'}">{{$t("message.training")}}</router-link>&nbsp;&nbsp;'
+									+'<router-link :to="{ name: \'facebookContainer\'}">Facebook</router-link>&nbsp;&nbsp;'
+								+'</span>'
+								+'<span style="float:right">'
+									+'<i18n_custom></i18n_custom>'
+								+'</span>'
+							+'</div> <!--page-header-->'
+						+'</div> <!--header-->'
+						+'<div class="content">'
+							+'<div class="col-md-10">'
+							+'<form class="form-horizontal">'
+								+'<div class="form-group">'
+									+'<label class="control-label col-sm-2" for="pageId">Page Id:</label>'
+									+'<div class="col-sm-10">'
+										+'<input type="text" class="form-control" v-model="this.facebookDeployment.values.pageId" id="pageId" placeholder="Page Id">'
+									+'</div>'
+								+'</div>'
+								+'<div class="form-group">'
+									+'<label class="control-label col-sm-2" for="appSecret">App Secret:</label>'
+									+'<div class="col-sm-10">'
+										+'<input type="text" class="form-control" id="appSecret" v-model="facebookDeployment.values.appSecret" placeholder="App Secret">'
+									+'</div>'
+								+'</div>'
+								+'<div class="form-group">'
+									+'<label class="control-label col-sm-2" for="accessToken">Access Token:</label>'
+									+'<div class="col-sm-10">'
+										+'<input type="text" class="form-control" id="accessToken" placeholder="Access Token" v-model="facebookDeployment.values.accessToken">'
+									+'</div>'
+								+'</div>'
+								+'<div class="form-group">'
+									+'<label class="control-label col-sm-2" for="verifyToken">Verify Token:</label>'
+									+'<div class="col-sm-10">'
+										+'<input type="text" class="form-control" id="verifyToken" placeholder="Verify Token" v-model="facebookDeployment.values.verifyToken">'
+									+'</div>'
+								+'</div>'
+								+'<div class="form-group">'
+									+'<label class="control-label col-sm-2" for="appId">App Id:</label>'
+									+'<div class="col-sm-10">'
+										+'<input type="text" class="form-control" id="appId" placeholder="App Id" v-model="facebookDeployment.values.appId">'
+									+'</div>'
+								+'</div>'
+								+'<div class="form-group">'
+									+'<div class="col-sm-offset-2 col-sm-10">'
+										+'<button type="button" class="btn btn-default">Deploy</button>'
+									+'</div>'
+								+'</div>'
+							+'</form>'
+							+'</div>'
+						+'</div> <!--content-->'
+					+'</div> <!--container-->',
+	methods : {
+
+	},
+	mounted : function(){
+
+		this.$nextTick(function () {
+			var facebookTemp = this.facebookDeployment;
+				Vue.http.get('/facebook/get',function(resp){
+					facebookTemp.values = resp;
+				});
+	  })
+	},
+	data :	function () {
+		return {facebookDeployment : {values : {}}}
+	}
+});
+
 // Menu isimleri
 var vrouter = new VueRouter({
 	routes: [
 		{name: 'home', path: '/', component: container},
 		{name: 'answersContainer', path: '/answers', component: answersContainer},
-		{name: 'trainingContainer', path: '/training', component: trainingContainer}
+		{name: 'trainingContainer', path: '/training', component: trainingContainer},
+		{name: 'facebookContainer', path: '/facebookDeployment', component: facebookContainer}
 	]
 });
 

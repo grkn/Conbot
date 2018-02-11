@@ -305,7 +305,6 @@ app.post('/api/getMessage/witai/:collectionName', cors(), function(req, res){
         }
       }
       //max configdence sahip intent i bulamadıysam
-      console.log(global.threshold);
       if(max < global.threshold){
         var random = Math.floor(Math.random() * (global.responseList.length - 1));
         var text = global.responseList[random];
@@ -545,7 +544,7 @@ app.post('/facebook/post', cors(), function (req, res) {
     req.body.facebookDeployment.appId,
     req.body.facebookDeployment.appSecret,
     req.body.facebookDeployment.accessToken,
-    req.body.facebookDeployment.verifyToken);
+    req.body.facebookDeployment.verifyToken,this.global,firebase);
 	facebookClass.botListen();
 	res.send({data : "OK"});
 });
