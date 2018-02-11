@@ -977,7 +977,9 @@ var trainingContainer = Vue.component("trainingContainer",{
 								+'<div><label>{{$t("message.threshold")}}</label>&nbsp;&nbsp;&nbsp;<select v-on:change="changeThreshold" v-model="threshold.val"><option value="0.1">0.1</option><option value="0.2">0.2</option>'
 								+'<option value="0.3">0.3</option><option value="0.4">0.4</option><option value="0.5">0.5</option><option value="0.6">0.6</option><option value="0.7">0.7</option>'
 								+'<option value="0.8">0.8</option><option value="0.9">0.9</option>'
-								+'</select></div>'
+								+'</select>'
+								+'&nbsp;&nbsp;&nbsp;<label>{{$t("message.responseList")}}</label>&nbsp;&nbsp;<input type="text" v-model="response"/>&nbsp;&nbsp;<button type="button" class="btn btn-info" v-on:click="addDefaultResponse">{{$t("message.add")}}</button>&nbsp;&nbsp;<select><option v-for="resp in responseList" v-bind:value="resp">{{resp}}</option></select>'
+								+'</div>'
 								+'<br/><br/>'
 								+'<training v-for="validateText in this.validateTextList" v-bind:array="validateText"></training>'
 							+'</div>'
@@ -986,6 +988,11 @@ var trainingContainer = Vue.component("trainingContainer",{
 	methods : {
 		changeThreshold : function(){
 			Vue.http.get("/change/threshold/"+this.threshold.val).then(function(resp){
+			});
+		},
+		addDefaultResponse : function(){
+			this.responseList.push(this.response);
+			Vue.http.get("/add/responseList/"+this.response).then(function(resp){
 			});
 		},
 		mountFunc : function(iList){
@@ -999,15 +1006,18 @@ var trainingContainer = Vue.component("trainingContainer",{
 	mounted : function(){
 		this.$nextTick(function () {
 			var thresholdTemp = this.threshold;
+			var responseListTemp = this.responseList;
 			Vue.http.get("/get/threshold/").then(function(resp){
-				debugger;
 					thresholdTemp.val =resp.data[0].threshold;
+					for(var i=0 ; i < resp.data[0].responseList.length;i++){
+						responseListTemp.push(resp.data[0].responseList[i]);
+					}
 			});
 			this.mountFunc(this.validateTextList);
 	  })
 	},
 	data :	function () {
-		return {validateTextList :[],	threshold :{val : 0.7}}
+		return {validateTextList :[],	threshold :{val : 0.7},responseList :[],response : ""}
 	}
 });
 

@@ -43,7 +43,8 @@ var messages = {
 			trainingPage : "Training Page",
 			removeValidation  : "Remove",
 			addValidation : "Validate",
-			threshold : "Threshold"
+			threshold : "Threshold",
+			responseList : "Default Response List"
 		}
 	},
 	tr: {
@@ -90,7 +91,8 @@ var messages = {
 			trainingPage : "E\u011Fitim Sayfas\u0131",
 			removeValidation  : "Sil",
 			addValidation : "Onayla",
-			threshold : "Threshold"
+			threshold : "Threshold",
+			responseList : "Cevap Listesi"
 		}
 	}
 

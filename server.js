@@ -31,7 +31,16 @@ mongo.connect(url, function(err, db) {
   instanceMongoQueries = new MongoQueries(db);
   instanceMongoQueries.find("configuration",function(resp){
     console.log(resp);
-    global = resp[0];
+    if(resp && resp.length > 0){
+      global = resp[0];
+    }else{
+      global = {
+        threshold : 0.7,
+        responseList : ['Aradığınızı bulamadım','Öğrenmek üzereyim','Başka şekilde tarif eder misin?']
+      }
+      instanceMongoQueries.insertOne("configuration",global,function(resp){});
+    }
+
   })
 
 });
@@ -296,6 +305,7 @@ app.post('/api/getMessage/witai/:collectionName', cors(), function(req, res){
         }
       }
       //max configdence sahip intent i bulamadıysam
+      console.log(global.threshold);
       if(max < global.threshold){
         var random = Math.floor(Math.random() * (global.responseList.length - 1));
         var text = global.responseList[random];
@@ -609,6 +619,7 @@ app.post('/witai/validate', function(req, res){
 });
 
 app.get("/change/threshold/:threshold", function(req, res){
+  global.threshold = req.params.threshold;
   instanceMongoQueries.updateOne("configuration", {}, { $set: {threshold: req.params.threshold }}, function(err, resp){
     res.send(resp);
   })
@@ -619,5 +630,11 @@ app.get("/get/threshold/", function(req, res){
     res.send(resp);
   })
 });
+app.get("/add/responseList/:response", function(req, res){
+  instanceMongoQueries.updateOne("configuration", {}, { $push: {responseList: req.params.response}}, function(err, resp){
+    res.send(resp);
+  })
+});
+
 
 app.listen(8000);
