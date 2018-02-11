@@ -166,11 +166,19 @@ var facebookclass= class FacebookBotClass {
 								ref.child('/').child(childSnapshot.key).once('value', function(itemSnapshot) {
 									if(itemSnapshot.val().key == maxValue){
 										var total = {text : itemSnapshot.val().value, type : itemSnapshot.val().type, intent : itemSnapshot.val().key};
-										var listTemplate = new ListTemplate(total.text);
+										if(total.type =="listTemplate"){
+											var listTemplate = new ListTemplate(total.text);
 
-										bot.sendMessage(payload.sender.id, listTemplateFunc(listTemplate.createListTemplate()), function(resp){
-											console.log(resp);
-										});
+											bot.sendMessage(payload.sender.id, listTemplateFunc(listTemplate.createListTemplate()), function(resp){
+												console.log(resp);
+											});
+										}else{
+											var text= total.type;
+											reply({text}, function(err){
+													console.log(err);
+											});
+										}
+
 									}
 								});
 							});
